@@ -32,7 +32,7 @@ const getActionItem = item => {
   );
 };
 
-export default ({ action, hide = true }) => {
+export default ({ action, hide = false }) => {
   let actions = [];
 
   if (action.length > 2 && hide) {
@@ -42,6 +42,7 @@ export default ({ action, hide = true }) => {
     const menu = [];
     for (let index = 1; index < action.length; index++) {
       const it = action[index];
+      if (!it) continue;
       menu.push(
         <Menu.Item key={it.key} onClick={it.onClick}>
           <A color={it.color}>{it.title}</A>
