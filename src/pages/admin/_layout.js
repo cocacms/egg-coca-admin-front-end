@@ -3,9 +3,9 @@ import { Layout, Icon, Tag } from 'antd';
 import styled from 'styled-components';
 import Link from 'umi/link';
 import { inject, observer } from 'mobx-react';
-
+import color from '@/color';
 import Menu from '@/component/menu';
-import UserDropdown from '@/component/user-dropdown';
+import RightDropdown from '@/component/right-dropdown';
 
 const { Header, Sider, Content, Footer } = Layout;
 
@@ -14,7 +14,7 @@ const MainLayout = styled(Layout)`
 `;
 
 const Logo = styled.div`
-  color: #1890ff;
+  color: ${color['@primary-color']};
   font-size: ${props => (props.collapsed ? '12px' : '20px')};
   height: 60px;
   display: flex;
@@ -33,7 +33,7 @@ const TriggerButton = styled(Icon)`
   cursor: pointer;
   transition: color 0.3s;
   &:hover {
-    color: #1890ff;
+    color: #${color['@primary-color']};
   }
 `;
 
@@ -79,7 +79,7 @@ const AdminLayout = ({ children, user }) => {
               setCollapsed(!collapsed);
             }}
           />
-          <UserDropdown />
+          <RightDropdown />
         </MainHeader>
 
         <MainContent>{children}</MainContent>

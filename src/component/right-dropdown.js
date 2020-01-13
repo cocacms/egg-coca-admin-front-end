@@ -3,9 +3,15 @@ import { Menu, Dropdown, Icon, Avatar } from 'antd';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import router from 'umi/router';
+import { right_dropdown } from '@/coca';
 
-const User = styled.div`
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+`;
+export const Item = styled.div`
   padding: 0px 24px;
+  height: 100%;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -29,7 +35,7 @@ class UserDropdown extends React.Component {
     router.push('/admin/resetPassword');
   };
 
-  menu = (
+  user_menu = (
     <Menu>
       <Menu.Item onClick={this.resetPassword}>
         <Icon type="user" />
@@ -45,12 +51,15 @@ class UserDropdown extends React.Component {
 
   render() {
     return (
-      <Dropdown overlay={this.menu} placement="bottomRight">
-        <User>
-          <Avatar size="small" icon="user" />
-          {this.props.user.info.account}
-        </User>
-      </Dropdown>
+      <Container>
+        {right_dropdown}
+        <Dropdown overlay={this.user_menu} placement="bottomRight">
+          <Item>
+            <Avatar size="small" icon="user" />
+            {this.props.user.info.account}
+          </Item>
+        </Dropdown>
+      </Container>
     );
   }
 }

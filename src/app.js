@@ -13,14 +13,20 @@ const renderAsync = async () => {
   if (!Authorization) {
     throw new Error('no login');
   } else {
-    await user.loadInfo();
+    return await user.loadInfo();
   }
 };
 
 export function render(oldRender) {
   renderAsync()
-    .then(() => {
-      router.replace('/admin');
+    .then(userInfo => {
+      let need_jump = false;
+
+      if (['/login', '/'].includes(window.g_history.location.pathname)) {
+        need_jump = true;
+      }
+
+      if (need_jump) router.replace(`/admin`);
     })
     .catch(() => {
       router.replace('/login');

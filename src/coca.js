@@ -1,20 +1,25 @@
-export default [
+export const right_dropdown = [];
+
+export const model = ['role'];
+
+const admin_menu = [
   {
     key: '/admin',
     icon: 'home',
     name: '首页',
   },
+
   {
     key: 'user&role',
     icon: 'team',
-    name: '角色与权限',
+    name: '账户与权限',
     authorities: ['user', 'role'],
     sub: [
       {
         key: '/admin/user',
         icon: 'team',
         name: '后台账号',
-        authorities: ['user', 'role'],
+        authorities: ['user'],
       },
 
       {
@@ -26,3 +31,7 @@ export default [
     ],
   },
 ];
+
+export const menu = user => {
+  return admin_menu;
+};

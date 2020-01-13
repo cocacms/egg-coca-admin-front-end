@@ -116,7 +116,7 @@ class Login extends Component {
         </FormItem>
         <FormItem>
           <div className="remeber-forget">
-            <div></div>
+            <div />
             <Link to="/login">返回登录</Link>
           </div>
           <div>

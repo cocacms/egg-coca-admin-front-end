@@ -1,4 +1,6 @@
 // ref: https://umijs.org/config/
+const color = require('../src/color');
+
 export default {
   treeShaking: true,
   history: 'hash',
@@ -13,7 +15,9 @@ export default {
     'process.env.ENV': 'dev',
     'process.env.VERSION': '1.0.0',
   },
-  theme: {},
+  theme: {
+    ...color,
+  },
   plugins: [
     // ref: https://umijs.org/plugin/umi-plugin-react.html
     [

@@ -2,6 +2,7 @@ import React from 'react';
 import { Result, Button } from 'antd';
 import router from 'umi/router';
 import { inject, observer } from 'mobx-react';
+import userModel from '@/model/user';
 
 export const check = (userinfo, authorities) => {
   if (userinfo.superadmin) {
@@ -109,4 +110,21 @@ class AuthorityComponent extends React.Component {
   }
 }
 
+@inject('user')
+@observer
+class Can extends React.Component {
+  render() {
+    const { authority = [], children, user } = this.props;
+    const checkResult = check(user.info, authority);
+    if (checkResult === true) return children;
+    return null;
+  }
+}
+
+const can = (authority = [], cb) => {
+  const checkResult = check(userModel.info || {}, authority);
+  if (checkResult === true && typeof cb === 'function') cb();
+};
+
+export { Can, can };
 export default AuthorityComponent;

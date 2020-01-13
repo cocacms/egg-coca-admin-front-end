@@ -31,7 +31,8 @@ class CURD {
   });
 
   update = flow(function*(id, data, params = {}) {
-    yield this.service.update(id, data, params);
+    const { data: obj } = yield this.service.update(id, data, params);
+    return obj;
   });
 
   destroy = flow(function*(id) {
@@ -39,8 +40,8 @@ class CURD {
   });
 
   @action.bound
-  clearCurrent() {
-    this.current = {};
+  clear(key, dedault = []) {
+    this[key] = dedault;
   }
 }
 

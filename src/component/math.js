@@ -236,7 +236,7 @@ class RichEditor extends Component {
       <Spin spinning={this.state.loading} tip="上传中...">
         <Container>
           <Toolbar>
-            <div id={`${this.key}_matheditor_toolbar_`}></div>
+            <div id={`${this.key}_matheditor_toolbar_`} />
 
             <Upload accept="image/*" action={this.uploadImg} showUploadList={false}>
               <Tooltip placement="topLeft" title="上传图片 (可在编辑框直接粘贴截图)">
@@ -251,7 +251,7 @@ class RichEditor extends Component {
                 type="link"
                 onClick={this.insertSpace}
                 icon="border-bottom"
-              ></Button>
+              />
             </Tooltip>
 
             {this.props.onSave && (

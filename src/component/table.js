@@ -1,6 +1,22 @@
 import router from 'umi/router';
 import React from 'react';
-import { Table, Input, Form, Button, List, InputNumber, Radio, Checkbox, Row, Col } from 'antd';
+import {
+  Table,
+  Input,
+  Form,
+  Button,
+  List,
+  InputNumber,
+  Radio,
+  Checkbox,
+  Row,
+  Col,
+  Select,
+  DatePicker,
+  Tooltip,
+  Icon,
+} from 'antd';
+import moment from 'moment';
 import withRouter from 'umi/withRouter';
 import styled from 'styled-components';
 
@@ -72,7 +88,7 @@ class TableWithHandler extends React.Component {
   };
 
   load = () => {
-    const { location } = this.props;
+    const { location, filters: filtersConfig = [] } = this.props;
     const { setFieldsValue } = this.props.form;
 
     const page = this.getCurrentPage();
@@ -97,11 +113,23 @@ class TableWithHandler extends React.Component {
       if (filters.length > 0) {
         const values = {};
         for (const filter of filters) {
-          values[filter.key] = filter.value;
+          const config = filtersConfig.find(i => i.key === filter.key);
+          if (config.type === 'date' && Array.isArray(filter.value) && filter.value.length > 0) {
+            values[filter.key] = filter.value.map(i => moment(i));
+          } else {
+            values[filter.key] = filter.value;
+          }
         }
         setFieldsValue(values);
       }
     } catch (error) {}
+
+    if (!sorter.field) {
+      sorter = {
+        field: 'id',
+        order: 'descend',
+      };
+    }
 
     this.setState(
       {
@@ -192,6 +220,10 @@ class TableWithHandler extends React.Component {
               _.method = 'like';
             }
 
+            if (filter.type === 'date') {
+              _.method = 'between';
+            }
+
             return _;
           })
           .filter(_ => _ !== undefined);
@@ -241,11 +273,42 @@ class TableWithHandler extends React.Component {
 
       return (
         <FormItem label={data.label}>
-          {getFieldDecorator(
-            data.key,
-            {},
-          )(<InputNumber style={{ width: '100%' }} {...keys.map(key => data[key])} />)}
+          {getFieldDecorator(data.key, {})(
+            <InputNumber style={{ width: '100%' }} {...keys.map(key => data[key])} />,
+          )}
         </FormItem>
+      );
+    }
+
+    if (data.type === 'date') {
+      return (
+        <FormItem label={data.label}>
+          {getFieldDecorator(data.key, {})(
+            <DatePicker.RangePicker {...data.props || {}} style={{ width: '100%' }} />,
+          )}
+        </FormItem>
+      );
+    }
+
+    if (data.type === 'select') {
+      return (
+        <FormItem label={data.label}>
+          {getFieldDecorator(data.key, {})(
+            <Select>
+              {(data.options || []).map(i => (
+                <Select.Option key={i.value} value={i.value}>
+                  {i.label}
+                </Select.Option>
+              ))}
+            </Select>,
+          )}
+        </FormItem>
+      );
+    }
+
+    if (data.component) {
+      return (
+        <FormItem label={data.label}>{getFieldDecorator(data.key, {})(data.component)}</FormItem>
       );
     }
 
@@ -286,10 +349,10 @@ class TableWithHandler extends React.Component {
       <div>
         {filters.length > 0 && (
           <Form onSubmit={this.handleSearch} style={{ margin: 18 }}>
-            <Row gutter={16}>
+            <Row gutter={16} type="flex">
               {filters.map(filter => {
                 return (
-                  <Col span={6} key={filter.key}>
+                  <Col md={12} xl={6} key={filter.key}>
                     {this.renderSearchComponent(filter)}
                   </Col>
                 );
@@ -330,6 +393,13 @@ class TableWithHandler extends React.Component {
               } catch (error) {
                 it.sortOrder = false;
               }
+            }
+            if (it.help && typeof it.title === 'string') {
+              it.title = (
+                <Tooltip title={it.help}>
+                  {it.title} <Icon type="question-circle" />
+                </Tooltip>
+              );
             }
             return it;
           })}

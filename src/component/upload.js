@@ -25,13 +25,20 @@ class PicturesWall extends React.Component {
   uploadKey = '';
 
   componentDidMount() {
-    if (this.props.value) {
-      this.setState(
-        {
-          fileList: this.props.value.map(url => ({ uid: url, url, status: 'done' })),
-        },
-        this.save,
-      );
+    const { value } = this.props;
+    if (value) {
+      let fileList = [];
+      if (Array.isArray(value)) {
+        fileList = this.props.value.map(url => ({ uid: url, url, status: 'done' }));
+      }
+
+      if (typeof value === 'string') {
+        fileList = [{ uid: value, url: value, status: 'done' }];
+      }
+
+      this.setState({
+        fileList,
+      });
     }
   }
 
@@ -46,7 +53,9 @@ class PicturesWall extends React.Component {
 
     const { max = 1 } = this.props;
     fileList = fileList.filter((item, index) => index < max);
-    this.props.onChange && this.destroy !== true && this.props.onChange(fileList);
+    if (this.props.onChange && this.destroy !== true) {
+      this.props.onChange(max === 1 ? fileList[0] : fileList);
+    }
   }, 1000);
 
   handleCancel = () => this.setState({ previewVisible: false });
@@ -109,6 +118,7 @@ class PicturesWall extends React.Component {
           listType="picture-card"
           fileList={fileList}
           onPreview={this.handlePreview}
+          multiple={max > 1}
           onChange={this.handleChange}
         >
           {fileList.length >= max ? null : uploadButton}

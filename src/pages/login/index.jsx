@@ -61,7 +61,7 @@ class Login extends Component {
               valuePropName: 'checked',
               initialValue: true,
             })(<Checkbox>记住登录状态</Checkbox>)}
-            <Link to="/login/forget"></Link>
+            <Link to="/login/forget" />
           </div>
           <div>
             <Button type="primary" htmlType="submit" className="login-form-button">

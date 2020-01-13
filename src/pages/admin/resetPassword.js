@@ -19,7 +19,7 @@ class Login extends Component {
 
     this.props.form.validateFieldsAndScroll(async (err, values) => {
       if (!err) {
-        await this.props.user.resetPassword( values.password, values.newpassword);
+        await this.props.user.resetPassword(values.password, values.newpassword);
         message.success('密码修改成功！');
       }
     });
