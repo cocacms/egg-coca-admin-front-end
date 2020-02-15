@@ -21,7 +21,7 @@ class Instance {
         dataIndex: 'permission',
         render: text => {
           const permission = window.permission || {};
-          return text.map(i => permission[i]).join('、') || '-';
+          return (text || []).map(i => permission[i]).join('、') || '-';
         },
       },
     ],

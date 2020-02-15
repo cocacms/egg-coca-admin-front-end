@@ -1,13 +1,15 @@
 import Auth from '@/component/authorized';
 import { Button, message, notification, Spin, Icon } from 'antd';
 import user from '@/model/user';
-import { permission } from '@/service/user';
+import { permission, setting } from '@/service/user';
 import router from 'umi/router';
 Spin.setDefaultIndicator(<Icon type="loading" style={{ fontSize: 24 }} spin />);
 
 const renderAsync = async () => {
-  const { data } = await permission();
-  window.permission = data;
+  const { data: permissionData } = await permission();
+  const { data: settingData } = await setting();
+  window.permission = permissionData;
+  window.setting = settingData;
   let Authorization =
     localStorage[process.env.APIAUTHNAME] || sessionStorage[process.env.APIAUTHNAME];
   if (!Authorization) {

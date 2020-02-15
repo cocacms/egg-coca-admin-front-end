@@ -65,120 +65,33 @@ class TableWithHandler extends React.Component {
     const { location } = this.props;
 
     const query = {
-      current: pagination.current,
+      page: pagination.current,
       pageSize: pagination.pageSize,
     };
 
-    if (sorter.field) {
-      query.sorter = JSON.stringify({
-        field: sorter.field,
-        order: sorter.order,
-      });
+    if (sorter.field && sorter.order) {
+      query.order = JSON.stringify([sorter.field, sorter.order === 'ascend' ? 'asc' : 'desc']);
     }
 
-    if (filters.length > 0) {
-      query.filters = JSON.stringify(filters);
-    }
-
+    if (location.query.where) query.where = location.query.where;
     query._t = new Date().valueOf();
+
     router.push({
       pathname: location.pathname,
       query,
     });
   };
 
-  load = () => {
-    const { location, filters: filtersConfig = [] } = this.props;
-    const { setFieldsValue } = this.props.form;
-
-    const page = this.getCurrentPage();
-    const pageSize = this.getPageSize();
-
-    let sorter = {};
-    let filters = [];
-    try {
-      sorter = JSON.parse(location.query.sorter);
-      if (sorter.field.indexOf('.') !== -1) {
-        const fields = sorter.field.split('.', 2);
-        sorter.association = fields[0];
-        sorter.field = fields[1];
-      }
-
-      if (!sorter.order) {
-        sorter = {};
-      }
-    } catch (error) {}
-    try {
-      filters = JSON.parse(location.query.filters);
-      if (filters.length > 0) {
-        const values = {};
-        for (const filter of filters) {
-          const config = filtersConfig.find(i => i.key === filter.key);
-          if (config.type === 'date' && Array.isArray(filter.value) && filter.value.length > 0) {
-            values[filter.key] = filter.value.map(i => moment(i));
-          } else {
-            values[filter.key] = filter.value;
-          }
-        }
-        setFieldsValue(values);
-      }
-    } catch (error) {}
-
-    if (!sorter.field) {
-      sorter = {
-        field: 'id',
-        order: 'descend',
-      };
-    }
-
-    this.setState(
-      {
-        loading: true,
-      },
-      async () => {
-        if (this.props.load) {
-          try {
-            filters = (filters || []).map(_ => {
-              if (_.method === 'like') {
-                _.value = `%${_.value}%`;
-              }
-              return _;
-            });
-            await this.props.load({
-              sorter,
-              filters,
-              pageSize,
-              page,
-            });
-          } finally {
-            this.setState({
-              loading: false,
-            });
-          }
-        }
-      },
-    );
-  };
-
   paginationPageChange = (page, pageSize) => {
     const { location } = this.props;
-    let sorter = {};
-    let filters = [];
-    try {
-      sorter = JSON.parse(location.query.sorter);
-    } catch (error) {}
-    try {
-      filters = JSON.parse(location.query.filters);
-    } catch (error) {}
-
-    this.handleTableChange(
-      {
-        current: page,
+    router.push({
+      pathname: location.pathname,
+      query: {
+        ...location.query,
+        page,
         pageSize,
       },
-      filters,
-      sorter,
-    );
+    });
   };
 
   handleReset = () => {
@@ -193,56 +106,99 @@ class TableWithHandler extends React.Component {
 
   getCurrentPage = () => {
     const { location } = this.props;
-    return Number(location.query.current || 1);
+    return Number(location.query.page || 1);
   };
 
   handleSearch = e => {
     e && e.preventDefault();
-    const { filters = [], location } = this.props;
+    const { location } = this.props;
 
     this.props.form.validateFields({ force: true }, (err, values) => {
       if (!err) {
-        const searchKeys = Object.keys(values).filter(key => typeof values[key] !== 'undefined');
+        const query = {
+          page: 1,
+          pageSize: this.getPageSize(),
+        };
 
-        const searchData = searchKeys
-          .map(key => {
-            const filter = filters.find(i => i.key === key);
-            if (!filter) {
-              return undefined;
-            }
+        if (location.query.order) query.order = location.query.order;
+        query.where = JSON.stringify(values);
+        query._t = new Date().valueOf();
 
-            const _ = {
-              key,
-              value: values[key],
-            };
-
-            if (filter.type === 'like') {
-              _.method = 'like';
-            }
-
-            if (filter.type === 'date') {
-              _.method = 'between';
-            }
-
-            return _;
-          })
-          .filter(_ => _ !== undefined);
-
-        let sorter = {};
-        try {
-          sorter = JSON.parse(location.query.sorter);
-        } catch (error) {}
-
-        this.handleTableChange(
-          {
-            current: 1,
-            pageSize: this.getPageSize(),
-          },
-          searchData,
-          sorter,
-        );
+        router.push({
+          pathname: location.pathname,
+          query,
+        });
       }
     });
+  };
+
+  handleWhere = (where = {}) => {
+    const { filters = [] } = this.props;
+
+    for (const key in where) {
+      if (where.hasOwnProperty(key)) {
+        const value = where[key];
+        const filter = filters.find(i => i.key === key);
+        if (filter) {
+          if (filter.type === 'like') {
+            where[key] = {
+              $like: `%${value}%`,
+            };
+          }
+
+          if (filter.type === 'date') {
+            where[key] = {
+              $between: value,
+            };
+          }
+        }
+      }
+    }
+    return where;
+  };
+
+  hanldeFilterValue = (where = {}) => {
+    const { filters = [] } = this.props;
+    for (const key in where) {
+      if (where.hasOwnProperty(key)) {
+        const value = where[key];
+        const filter = filters.find(i => i.key === key);
+        if (filter) {
+          if (filter.type === 'date' && Array.isArray(value)) {
+            where[key] = value.map(i => moment(i));
+          }
+        }
+      }
+    }
+    return where;
+  };
+
+  load = async () => {
+    const { location, load, form } = this.props;
+    if (load) {
+      let where = {};
+
+      this.setState({
+        loading: true,
+      });
+      try {
+        where = JSON.parse(location.query.where);
+      } catch (error) {
+        where = {};
+      }
+
+      try {
+        form.setFieldsValue(this.hanldeFilterValue(where));
+        await load({
+          ...location.query,
+          where: this.handleWhere(where),
+        });
+      } finally {
+        this.setState({
+          loading: false,
+        });
+      }
+    }
   };
 
   renderSearchComponent(data) {
@@ -273,9 +229,10 @@ class TableWithHandler extends React.Component {
 
       return (
         <FormItem label={data.label}>
-          {getFieldDecorator(data.key, {})(
-            <InputNumber style={{ width: '100%' }} {...keys.map(key => data[key])} />,
-          )}
+          {getFieldDecorator(
+            data.key,
+            {},
+          )(<InputNumber style={{ width: '100%' }} {...keys.map(key => data[key])} />)}
         </FormItem>
       );
     }
@@ -283,9 +240,10 @@ class TableWithHandler extends React.Component {
     if (data.type === 'date') {
       return (
         <FormItem label={data.label}>
-          {getFieldDecorator(data.key, {})(
-            <DatePicker.RangePicker {...data.props || {}} style={{ width: '100%' }} />,
-          )}
+          {getFieldDecorator(
+            data.key,
+            {},
+          )(<DatePicker.RangePicker {...(data.props || {})} style={{ width: '100%' }} />)}
         </FormItem>
       );
     }
@@ -293,7 +251,10 @@ class TableWithHandler extends React.Component {
     if (data.type === 'select') {
       return (
         <FormItem label={data.label}>
-          {getFieldDecorator(data.key, {})(
+          {getFieldDecorator(
+            data.key,
+            {},
+          )(
             <Select>
               {(data.options || []).map(i => (
                 <Select.Option key={i.value} value={i.value}>
@@ -384,11 +345,9 @@ class TableWithHandler extends React.Component {
           columns={this.props.columns.map(it => {
             if (it.sorter) {
               try {
-                const sorter = JSON.parse(location.query.sorter);
-                if (sorter.field === it.dataIndex) {
-                  it.sortOrder = sorter.order;
-                } else {
-                  it.sortOrder = false;
+                const order = JSON.parse(location.query.order);
+                if (Array.isArray(order) && order.length === 2 && order[0] === it.dataIndex) {
+                  it.sortOrder = order[1] === 'desc' ? 'descend' : 'ascend';
                 }
               } catch (error) {
                 it.sortOrder = false;

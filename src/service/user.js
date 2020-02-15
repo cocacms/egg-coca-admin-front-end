@@ -17,3 +17,6 @@ export const info = async () => {
 export const permission = async () => {
   return await axios.get(`${api}/permission`);
 };
+export const setting = async () => {
+  return await axios.get(`${api}/setting-dataset`);
+};

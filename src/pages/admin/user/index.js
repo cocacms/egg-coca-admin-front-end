@@ -34,12 +34,19 @@ class Instance {
         },
       },
       {
-        title: '超级管理员',
-        dataIndex: 'superadmin',
-        render: text => (text ? '是' : '否'),
+        title: '类型',
+        dataIndex: 'type',
+        render: text => ({ super: '超级管理员', admin: '管理员', normal: '普通员工' }[text]),
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createdAt',
       },
     ],
-    filters: [{ key: 'account', label: '账号', type: 'text' }],
+    filters: [
+      { key: 'account', label: '账号', type: 'text' },
+      { key: 'createdAt', label: '创建时间', type: 'date' },
+    ],
   };
 }
 

@@ -1,6 +1,6 @@
 export const right_dropdown = [];
 
-export const model = ['role'];
+export const model = ['role', 'setting'];
 
 const admin_menu = [
   {
@@ -10,7 +10,14 @@ const admin_menu = [
   },
 
   {
-    key: 'user&role',
+    key: '/admin/setting/1?back=0',
+    icon: 'setting',
+    name: '系统配置',
+    authorities: ['setting'],
+  },
+
+  {
+    key: 'user_role',
     icon: 'team',
     name: '账户与权限',
     authorities: ['user', 'role'],

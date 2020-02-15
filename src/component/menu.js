@@ -22,8 +22,9 @@ const getMenuItem = (it, userInfo) => {
     icon = it.icon;
   }
 
+  const key = it.key.split('?', 1)[0];
   return (
-    <Menu.Item key={it.key}>
+    <Menu.Item key={key} path={it.key}>
       {icon}
       <span>{it.name}</span>
     </Menu.Item>
@@ -50,8 +51,8 @@ export default withRouter(({ location, userInfo }) => {
         .map(i => i.key)}
       defaultSelectedKeys={[location.pathname]}
       selectedKeys={[location.pathname]}
-      onClick={({ key }) => {
-        router.push(key);
+      onClick={({ item }) => {
+        if (item.props.path) router.push(item.props.path);
       }}
     >
       {getMenu().map(it => {

@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 import userModel from '@/model/user';
 
 export const check = (userinfo, authorities) => {
-  if (userinfo.superadmin) {
+  if (userinfo.type === 'super') {
     return true;
   }
 

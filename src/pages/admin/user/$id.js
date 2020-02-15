@@ -56,9 +56,14 @@ class Instance {
         },
       },
       {
-        key: 'superadmin',
-        type: 'switch',
-        label: '超管',
+        key: 'type',
+        type: 'radio',
+        label: '类型',
+        options: [
+          { label: '超级管理员', value: 'super' },
+          { label: '管理员', value: 'admin' },
+          { label: '普通员工', value: 'normal' },
+        ],
         required: true,
       },
     ],

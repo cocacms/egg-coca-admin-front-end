@@ -81,7 +81,7 @@ class RichEditor extends Component {
               message.success('保存草稿成功');
             }}
           >
-            保存草稿
+            保存本地草稿
           </Button>
           &nbsp;
           <Popconfirm
@@ -98,7 +98,7 @@ class RichEditor extends Component {
             cancelText="不了"
           >
             <Button type="primary" size="small">
-              恢复草稿
+              恢复本地草稿
             </Button>
           </Popconfirm>
         </div>
