@@ -1,4 +1,4 @@
-import { Divider, Dropdown, Icon, Menu, Popconfirm } from 'antd';
+import { Divider, Popconfirm } from 'antd';
 import styled from 'styled-components';
 
 const A = styled.span`
@@ -11,6 +11,7 @@ const A = styled.span`
 
 const getActionItem = item => {
   if (!item) return item;
+
   if (item.confirm) {
     return (
       <Popconfirm
@@ -25,6 +26,7 @@ const getActionItem = item => {
       </Popconfirm>
     );
   }
+
   return (
     <A color={item.color} key={item.key} onClick={item.onClick}>
       {item.title}
@@ -32,36 +34,9 @@ const getActionItem = item => {
   );
 };
 
-export default ({ action, hide = false }) => {
+export default ({ action }) => {
   let actions = [];
-
-  if (action.length > 2 && hide) {
-    const it = action[0];
-    actions.push(getActionItem(it));
-
-    const menu = [];
-    for (let index = 1; index < action.length; index++) {
-      const it = action[index];
-      if (!it) continue;
-      menu.push(
-        <Menu.Item key={it.key} onClick={it.onClick}>
-          <A color={it.color}>{it.title}</A>
-        </Menu.Item>,
-      );
-    }
-
-    actions.push(
-      <Dropdown key="_menu_" overlay={<Menu>{menu}</Menu>}>
-        <A>
-          更多
-          <Icon type="down" />
-        </A>
-      </Dropdown>,
-    );
-  } else {
-    actions = action.map(it => getActionItem(it));
-  }
-
+  actions = action.map(it => getActionItem(it));
   actions = actions.filter(i => !!i);
   if (actions.length === 0) return '-';
   actions = actions.reduce((result, item, index) => {

@@ -4,29 +4,26 @@
  *  - role
  */
 
-import pager from '@/component/pager';
+import React from 'react';
+import Pager from '@/component/pager';
 
-@pager
-class Instance {
-  static model = 'role';
-  config = {
-    name: '角色',
-    columns: [
-      {
-        title: '角色名',
-        dataIndex: 'name',
+export default class extends React.Component {
+  columns = [
+    {
+      title: '角色名',
+      dataIndex: 'name',
+    },
+    {
+      title: '权限',
+      dataIndex: 'permission',
+      render: text => {
+        const permission = window.permission || {};
+        return (text || []).map(i => permission[i]).join('、') || '-';
       },
-      {
-        title: '权限',
-        dataIndex: 'permission',
-        render: text => {
-          const permission = window.permission || {};
-          return (text || []).map(i => permission[i]).join('、') || '-';
-        },
-      },
-    ],
-    pagination: false,
-  };
+    },
+  ];
+
+  render() {
+    return <Pager name="角色" model="role" columns={this.columns} />;
+  }
 }
-
-export default Instance;

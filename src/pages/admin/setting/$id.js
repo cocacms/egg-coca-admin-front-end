@@ -3,17 +3,11 @@
  * authority:
  *  - setting
  */
-import { editor } from '@/component/pager';
+import React from 'react';
+import { Editor } from '@/component/pager';
 
-@editor
-class Instance {
-  static model = 'setting';
-
-  config = {
-    name: '系统配置',
-    query_inject: {},
-    form: window.setting || [],
-  };
+export default class extends React.Component {
+  render() {
+    return <Editor model="setting" name="系统配置" forms={window.setting || []} />;
+  }
 }
-
-export default Instance;
