@@ -1,16 +1,16 @@
 import React from 'react';
 import { MobXProviderContext, Observer } from 'mobx-react';
-import { Box } from './form';
 import Action from '@/component/Action';
-import Table from '@/component/table';
-import Back from '@/component/back';
+import Table from '@/component/Table';
+import Back from '@/component/Back';
 import { Divider, Row, Col, Button, message, Modal } from 'antd';
 import router from 'umi/router';
 import withRouter from 'umi/withRouter';
 import { IRouteComponentProps } from '@/index';
 
+import { Box } from './form';
 import Editor from './editor';
-export { Editor };
+export { Editor, Box };
 
 interface ICocaPager extends IRouteComponentProps {
   model: string;

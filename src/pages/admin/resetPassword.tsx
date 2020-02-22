@@ -9,7 +9,7 @@ import { inject, observer } from 'mobx-react';
 import { FormComponentProps } from 'antd/es/form';
 
 import { UserModel } from '@/model/user';
-import { Box } from '@/component/Pager/form';
+import { Box } from '@/component/Pager';
 
 interface IProps {
   form: FormComponentProps['form'];

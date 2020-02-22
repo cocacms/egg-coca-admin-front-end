@@ -71,12 +71,15 @@ class Edit extends React.Component<ICocaEditorProps> {
   }
 
   handleSubmit = (event: React.MouseEvent) => {
-    console.log('1');
     if (!this.model) return;
+
     const { hook, links, key = 'id', location } = this.props;
     this.props.form.validateFieldsAndScroll(async (err: any, values: any) => {
       if (!err) {
-        values = hook?.before(values);
+        if (hook && hook.before) {
+          values = hook.before(values);
+        }
+
         let result;
 
         const id = this.props.match.params[key];

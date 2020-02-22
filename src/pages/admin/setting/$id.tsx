@@ -4,7 +4,7 @@
  *  - setting
  */
 import React from 'react';
-import { Editor } from '@/component/pager';
+import { Editor } from '@/component/Pager';
 
 export default class extends React.Component {
   render() {

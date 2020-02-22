@@ -4,7 +4,7 @@
  *  - user
  */
 import React from 'react';
-import { Editor } from '@/component/pager';
+import { Editor } from '@/component/Pager';
 import RoleSelect from '@/component/RoleSelect';
 
 export default class extends React.Component {

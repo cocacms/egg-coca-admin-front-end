@@ -5,7 +5,7 @@
  *  - user
  */
 import React from 'react';
-import Pager from '@/component/pager';
+import Pager from '@/component/Pager';
 
 export default class extends React.Component {
   state = {

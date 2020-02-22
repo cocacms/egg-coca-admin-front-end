@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Link from 'umi/link';
 import { inject, observer } from 'mobx-react';
 import theme from '../../../config/theme';
-import Menu from '@/component/menu';
+import Menu from '@/component/Menu';
 import HeaderDropdown from '@/component/Dropdown';
 import { UserModel } from '@/model/user';
 

@@ -17,7 +17,7 @@ export const check = (
     return 401;
   }
 
-  let UserAllPermission = userinfo?.roles.reduce((pre: string[], role) => {
+  let UserAllPermission = userinfo.roles.reduce((pre: string[], role) => {
     for (const permission of role.permission) {
       pre.push(permission);
     }
