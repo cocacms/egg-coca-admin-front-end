@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Result, Button } from 'antd';
-import router from 'umi/router';
+import { history } from 'umi';
 
 const The404: React.FC = () => {
   return (
@@ -13,7 +13,7 @@ const The404: React.FC = () => {
         <Button
           type="primary"
           onClick={() => {
-            router.replace('/admin');
+            history.replace('/admin');
           }}
         >
           返回首页

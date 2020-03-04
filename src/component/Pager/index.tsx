@@ -4,8 +4,7 @@ import Action from '@/component/Action';
 import Table from '@/component/Table';
 import Back from '@/component/Back';
 import { Divider, Row, Col, Button, message, Modal } from 'antd';
-import router from 'umi/router';
-import withRouter from 'umi/withRouter';
+import { history, withRouter } from 'umi';
 import { IRouteComponentProps } from '@/index';
 
 import { Box } from './form';
@@ -36,7 +35,7 @@ class Pager extends React.Component<ICocaPager> {
   }
 
   goCreate = () => {
-    router.push(`${this.props.location.pathname}/0`);
+    history.push(`${this.props.location.pathname}/0`);
   };
 
   columns() {
@@ -88,7 +87,7 @@ class Pager extends React.Component<ICocaPager> {
         key: 'edit',
         title: '编辑',
         onClick: () => {
-          router.push(`${this.props.location.pathname}/${record.id}`);
+          history.push(`${this.props.location.pathname}/${record.id}`);
         },
       });
     }
@@ -135,7 +134,7 @@ class Pager extends React.Component<ICocaPager> {
 
   reload = () => {
     const { location } = this.props;
-    router.push({
+    history.push({
       pathname: location.pathname,
       query: {
         ...location.query,
@@ -179,7 +178,7 @@ class Pager extends React.Component<ICocaPager> {
             <Observer
               render={() => (
                 <Box>
-                  <Row type="flex" justify="space-between">
+                  <Row justify="space-between">
                     <Col>
                       <h1>
                         <Back show={false} />

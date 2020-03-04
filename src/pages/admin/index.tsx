@@ -1,9 +1,3 @@
-/**
- * title:
- *  数据报表
- *
- * authority:
- */
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import styled from 'styled-components';
@@ -31,4 +25,6 @@ class Page extends React.Component<IProps> {
   }
 }
 
+Page.title = '数据报表';
+Page.access = 'test';
 export default Page;

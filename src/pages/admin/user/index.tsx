@@ -4,15 +4,11 @@
  * authority:
  *  - user
  */
-import React from 'react';
+import React, { useState } from 'react';
 import Pager from '@/component/Pager';
 
-export default class extends React.Component {
-  state = {
-    show: false,
-  };
-
-  columns = [
+export default () => {
+  const columns = [
     {
       title: '账号',
       dataIndex: 'account',
@@ -36,12 +32,12 @@ export default class extends React.Component {
     },
   ];
 
-  filters = [
+  const filters = [
     { key: 'account', label: '账号', type: 'text' },
     { key: 'createdAt', label: '创建时间', type: 'date' },
   ];
 
-  query = {
+  const query = {
     include: [
       {
         association: 'roles',
@@ -50,15 +46,7 @@ export default class extends React.Component {
     ],
   };
 
-  render() {
-    return (
-      <Pager
-        name="账号管理"
-        model="user"
-        columns={this.columns}
-        filters={this.filters}
-        query={this.query}
-      ></Pager>
-    );
-  }
-}
+  return (
+    <Pager name="账号管理" model="user" columns={columns} filters={filters} query={query}></Pager>
+  );
+};

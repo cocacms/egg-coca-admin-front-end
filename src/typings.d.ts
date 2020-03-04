@@ -20,23 +20,23 @@ interface ICocaRole {
 }
 
 interface ICocaUserInfo {
-  id: number;
-  type: 'super' | 'admin' | 'normal';
-  roles: ICocaRole[];
-  account: string;
-  password: string;
+  id?: number;
+  type?: 'super' | 'admin' | 'normal';
+  roles?: ICocaRole[];
+  account?: string;
+  password?: string;
 }
 
 interface ICocaMenu {
   key: string;
   name: string;
-  icon?: string | React.Component;
-  authorities?: string[];
+  icon?: React.ReactElement;
+  access?: string;
   sub?: ICocaMenu[];
 }
 
 interface ICocaOption {
-  label: React.ReactNode;
+  label: React.ReactElement | string;
   value: any;
   disabled?: boolean;
   onChange?: (e: any) => void;
@@ -62,13 +62,13 @@ interface ICocaFilter {
 interface ICocaColumn {
   title?: React.ReactNode | string;
   key?: React.Key;
-  dataIndex?: string; // Note: We can not use generic type here, since we need to support nested key, see #9393
+  dataIndex?: string;
   render?: (text: any, record: any, index: number) => React.ReactNode;
   align?: 'left' | 'right' | 'center';
   ellipsis?: boolean;
   sorter?: boolean;
   defaultSortOrder?: 'ascend' | 'descend';
-  sortOrder?: 'ascend' | 'descend' | false;
+  sortOrder?: 'ascend' | 'descend' | null;
   colSpan?: number;
   width?: string | number;
   className?: string;
@@ -77,22 +77,23 @@ interface ICocaColumn {
 }
 
 interface ICocaForm {
-  type: string;
-  key: string;
-  label: string;
-  options?: ICocaOption[] | (() => ICocaOption[]);
-  initialValue?: any | ((initialValue: boolean, data: any) => any);
-  onChange?: (v: any) => void;
+  name: string;
+  label: string | React.ReactNode;
   required?: boolean;
   rules?: any[];
-  props?: any | ((data: any) => any);
+  extra?: string;
+
+  options?: ICocaOption[] | (() => ICocaOption[]);
+  type: string;
   component?: React.ReactElement;
-  dataType?: string;
-  help?: string;
+  props?: any | ((data: any) => any);
+  onChange?: (v: any) => void;
+
+  [propName: string]: any;
 }
 
 interface ICoca {
   model: string[];
-  dropdown: React.Component[];
-  menu: ICocaMenu[] | ((user: ICocaUserInfo) => ICocaMenu[]);
+  dropdown: React.ReactElement[];
+  menu: ICocaMenu[] | (() => ICocaMenu[]);
 }

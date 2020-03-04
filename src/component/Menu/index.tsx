@@ -1,15 +1,12 @@
 import React from 'react';
-import { Menu, Icon } from 'antd';
-import withRouter from 'umi/withRouter';
-import router from 'umi/router';
-import { check } from '@/component/Authorized';
+import { Menu } from 'antd';
+import { history, withRouter, useAccess } from 'umi';
+
 import { IRouteComponentProps } from '@/index';
 import coca from '@/coca';
 import { MenuItemProps } from 'antd/es/menu/MenuItem';
 
-interface ICocaMenuProps extends IRouteComponentProps<any> {
-  userInfo: ICocaUserInfo;
-}
+interface ICocaMenuProps extends IRouteComponentProps<any> {}
 
 const { SubMenu } = Menu;
 
@@ -19,10 +16,16 @@ interface IMenuItem extends MenuItemProps {
 
 const MenuItem: React.FC<IMenuItem> = props => <Menu.Item {...props}>{props.children}</Menu.Item>;
 
-const getMenuItem = (it: ICocaMenu, userInfo: ICocaUserInfo) => {
-  let is: boolean | number | string[] = true;
-  if (it.authorities) {
-    is = check(userInfo, it.authorities);
+const getMenuItem = (it: ICocaMenu) => {
+  const access = useAccess();
+
+  let is: boolean = true;
+  if (it.access) {
+    if (access[it.access]) {
+      is = access[it.access]();
+    } else {
+      is = access.__check__();
+    }
   }
 
   if (is !== true) {
@@ -30,9 +33,7 @@ const getMenuItem = (it: ICocaMenu, userInfo: ICocaUserInfo) => {
   }
 
   let icon = null;
-  if (it.icon && typeof it.icon === 'string') {
-    icon = <Icon type={it.icon} />;
-  } else if (it.icon) {
+  if (it.icon) {
     icon = it.icon;
   }
 
@@ -45,14 +46,14 @@ const getMenuItem = (it: ICocaMenu, userInfo: ICocaUserInfo) => {
   );
 };
 
-const CocaMenu: React.FC<ICocaMenuProps> = ({ location, userInfo }) => {
+const CocaMenu: React.FC<ICocaMenuProps> = ({ location }) => {
   const getMenu = () => {
     if (Array.isArray(coca.menu)) {
       return coca.menu;
     }
 
     if (typeof coca.menu === 'function') {
-      return coca.menu(userInfo);
+      return coca.menu();
     }
     return [];
   };
@@ -66,17 +67,15 @@ const CocaMenu: React.FC<ICocaMenuProps> = ({ location, userInfo }) => {
       defaultSelectedKeys={[location.pathname]}
       selectedKeys={[location.pathname]}
       onClick={({ item }) => {
-        if (item.props.path) router.push(item.props.path);
+        if (item.props.path) history.push(item.props.path);
       }}
     >
       {getMenu().map(it => {
         if (it.sub && Array.isArray(it.sub) && it.sub.length > 0) {
-          const childs = it.sub.map(iit => getMenuItem(iit, userInfo)).filter(iit => iit !== null);
+          const childs = it.sub.map(iit => getMenuItem(iit)).filter(iit => iit !== null);
           if (childs.length > 0) {
             let icon = null;
-            if (it.icon && typeof it.icon === 'string') {
-              icon = <Icon type={it.icon} />;
-            } else if (it.icon) {
+            if (it.icon) {
               icon = it.icon;
             }
             return (
@@ -95,7 +94,7 @@ const CocaMenu: React.FC<ICocaMenuProps> = ({ location, userInfo }) => {
           }
           return null;
         }
-        return getMenuItem(it, userInfo);
+        return getMenuItem(it);
       })}
     </Menu>
   );

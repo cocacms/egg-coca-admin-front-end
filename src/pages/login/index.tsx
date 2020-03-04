@@ -4,81 +4,69 @@
  */
 
 import React, { Component } from 'react';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Checkbox } from 'antd';
 import { inject, observer } from 'mobx-react';
-import router from 'umi/router';
-import Link from 'umi/link';
+import { history, useModel } from 'umi';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import styled from 'styled-components';
 
-import { FormComponentProps } from 'antd/es/form';
-import { UserModel } from '@/model/user';
+const LoginForm = styled(Form)`
+  width: 100%;
 
-import './index.less';
+  .login-form-button {
+    width: 100%;
+  }
+
+  .remeber-forget {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .sendCode {
+    font-size: 10px;
+    cursor: pointer;
+  }
+`;
 
 interface IProps {
-  form: FormComponentProps['form'];
-  user: UserModel;
+  user: any;
 }
-
-interface IState {}
 
 const FormItem = Form.Item;
 
-class Login extends Component<IProps, IState> {
-  state = {};
+const Login: React.FC<IProps> = ({ user }) => {
+  const { refresh } = useModel('@@initialState');
 
-  handleSubmit = (e: any) => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll(async (err, values) => {
-      if (!err) {
-        await this.props.user.login(values.account, values.password, values.remember);
-        await router.push('/admin');
-      }
-    });
+  const handleSubmit = async (values: any) => {
+    await user.login(values.account, values.password, values.remember);
+    await refresh();
+    await history.push('/admin');
   };
 
-  render() {
-    const { getFieldDecorator } = this.props.form;
+  return (
+    <LoginForm onFinish={handleSubmit} initialValues={{ remember: true }}>
+      <FormItem name="account">
+        <Input prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="账号" />
+      </FormItem>
+      <FormItem name="password">
+        <Input
+          prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+          type="password"
+          placeholder="密码"
+        />
+      </FormItem>
 
-    return (
-      <Form onSubmit={this.handleSubmit} className="login-form">
-        <FormItem>
-          {getFieldDecorator('account', {
-            rules: [{ required: true, message: '请输入登录账号' }],
-          })(
-            <Input
-              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="账号"
-            />,
-          )}
+      <div className="remeber-forget">
+        <FormItem name="remember" valuePropName="checked">
+          <Checkbox>记住登录状态</Checkbox>
         </FormItem>
-        <FormItem>
-          {getFieldDecorator('password', {
-            rules: [{ required: true, message: '请输入密码' }],
-          })(
-            <Input
-              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              type="password"
-              placeholder="密码"
-            />,
-          )}
-        </FormItem>
-        <FormItem>
-          <div className="remeber-forget">
-            {getFieldDecorator('remember', {
-              valuePropName: 'checked',
-              initialValue: true,
-            })(<Checkbox>记住登录状态</Checkbox>)}
-            <Link to="/login/forget" />
-          </div>
-          <div>
-            <Button type="primary" htmlType="submit" className="login-form-button">
-              登录
-            </Button>
-          </div>
-        </FormItem>
-      </Form>
-    );
-  }
-}
-
-export default inject('user')(observer(Form.create<IProps>()(Login)));
+      </div>
+      <div>
+        <Button type="primary" htmlType="submit" block className="login-form-button">
+          登录
+        </Button>
+      </div>
+    </LoginForm>
+  );
+};
+export default inject('user')(observer(Login));

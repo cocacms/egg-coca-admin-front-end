@@ -1,7 +1,7 @@
 import { observable, action } from 'mobx';
 import { actionAsync, task } from 'mobx-utils';
 import { login, info, resetPassword } from '@/service/user';
-import router from 'umi/router';
+import { history } from 'umi';
 import CurdModel from './curd';
 import curdApuBuilder from '@/service/curd';
 
@@ -11,8 +11,6 @@ export interface UserModel {
   resetPassword(password: string, newpassword: string): Promise<any>;
   loadInfo(force: boolean): Promise<any>;
   logout(): void;
-  code(account: string): void;
-  forgetPassword(account: string, password: string, code: string): void;
 }
 
 class Model extends CurdModel implements UserModel {
@@ -31,8 +29,6 @@ class Model extends CurdModel implements UserModel {
       } else {
         sessionStorage[process.env.APIAUTHNAME || 'process.env.APIAUTHNAME'] = data.token;
       }
-
-      this.loadInfo();
     }
   }
 
@@ -44,7 +40,7 @@ class Model extends CurdModel implements UserModel {
   @actionAsync
   async loadInfo(force: boolean = false) {
     if (this.info.id && !force) {
-      return;
+      return this.info;
     }
     const { data } = await task(info());
     this.info = data;
@@ -56,11 +52,8 @@ class Model extends CurdModel implements UserModel {
     this.info = {};
     localStorage.removeItem(process.env.APIAUTHNAME || 'process.env.APIAUTHNAME');
     sessionStorage.removeItem(process.env.APIAUTHNAME || 'process.env.APIAUTHNAME');
-    router.replace('/login');
+    history.replace('/login');
   }
-
-  code() {} // TODO
-  forgetPassword() {} // TODO
 }
 
 export default new Model();

@@ -40,12 +40,11 @@ request.interceptors.response.use(
       msg = response.data.errors.errors[0].message;
     }
 
-    if (response.status === 401) {
+    if (response.status === 401 && response.config.url === process.env.APIHOST) {
       user.logout();
     }
 
     message.error(msg);
-
     return Promise.reject(msg);
   },
   function(error) {

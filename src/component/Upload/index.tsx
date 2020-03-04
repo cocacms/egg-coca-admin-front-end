@@ -1,8 +1,9 @@
 import React from 'react';
-import { Upload, Icon, Modal } from 'antd';
+import { Upload, Modal } from 'antd';
 import { debounce } from 'lodash';
 import { getToken } from '@/service/upload';
 import { UploadFile, UploadChangeParam, RcFile } from 'antd/es/upload/interface';
+import { PlusOutlined } from '@ant-design/icons';
 
 function getBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -111,7 +112,7 @@ class PicturesWall extends React.Component<
     const { previewVisible, previewImage, fileList } = this.state;
     const uploadButton = (
       <div>
-        <Icon type="plus" />
+        <PlusOutlined />
         <div className="ant-upload-text">{tip}</div>
       </div>
     );

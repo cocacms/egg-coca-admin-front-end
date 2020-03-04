@@ -1,64 +1,46 @@
 import React from 'react';
-import router from 'umi/router';
-import { Button, message, notification, Spin, Icon } from 'antd';
-
-import Auth from '@/component/Authorized';
+import { history } from 'umi';
+import { Button, message, notification, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import user from '@/model/user';
 import { permission, setting } from '@/service/config';
 
-Spin.setDefaultIndicator(<Icon type="loading" style={{ fontSize: 24 }} spin />);
+Spin.setDefaultIndicator(<LoadingOutlined />);
 
 const renderAsync = async () => {
-  const { data: permissionData } = await permission();
-  const { data: settingData } = await setting();
-  window.permission = permissionData;
-  window.setting = settingData;
   let Authorization =
     localStorage[process.env.APIAUTHNAME || 'process.env.APIAUTHNAME'] ||
     sessionStorage[process.env.APIAUTHNAME || 'process.env.APIAUTHNAME'];
   if (!Authorization) {
     throw new Error('no login');
   } else {
-    return await user.loadInfo();
+    return await user.loadInfo(true);
   }
 };
 
-export function render(oldRender: any) {
-  renderAsync()
-    .then(userInfo => {
-      let need_jump = false;
+export async function getInitialState() {
+  const { data: permissionData } = await permission();
+  const { data: settingData } = await setting();
+  let userInfo: ICocaUserInfo;
+  try {
+    userInfo = await renderAsync();
 
-      if (['/login', '/'].includes(window.g_history.location.pathname)) {
-        need_jump = true;
-      }
+    let need_jump = false;
 
-      if (need_jump) router.replace(`/admin`);
-    })
-    .catch(() => {
-      router.replace('/login');
-    })
-    .finally(oldRender);
-}
-
-const addAuthToRoutes = (routes: any[]) => {
-  for (let index = 0; index < routes.length; index++) {
-    const it = routes[index];
-    if (it.authority instanceof Array) {
-      if (it.Routes) {
-        it.Routes.push(Auth);
-      } else {
-        it.Routes = [Auth];
-      }
+    if (['/login', '/'].includes(history.location.pathname)) {
+      need_jump = true;
     }
-
-    if (it.routes instanceof Array && it.routes.length > 0) {
-      addAuthToRoutes(it.routes);
-    }
+    if (need_jump) history.replace(`/admin`);
+  } catch (error) {
+    userInfo = {};
+    history.replace('/login');
   }
-};
 
-export function patchRoutes(routes: any[]) {
-  addAuthToRoutes(routes);
+  return {
+    permission: permissionData,
+    setting: settingData,
+    userInfo,
+  };
 }
 
 /**
@@ -118,27 +100,3 @@ window.addEventListener('sw.updated', (event: Event) => {
     onClose: async () => {},
   });
 });
-
-if ('serviceWorker' in navigator) {
-  // unregister service worker
-  const { serviceWorker } = navigator;
-  if (serviceWorker.getRegistrations) {
-    serviceWorker.getRegistrations().then(sws => {
-      sws.forEach(sw => {
-        sw.unregister();
-      });
-    });
-  }
-  serviceWorker.getRegistration().then(sw => {
-    if (sw) sw.unregister();
-  });
-
-  // remove all caches
-  if (window.caches && window.caches.keys) {
-    caches.keys().then(keys => {
-      keys.forEach(key => {
-        caches.delete(key);
-      });
-    });
-  }
-}

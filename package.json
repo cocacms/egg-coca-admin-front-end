@@ -14,6 +14,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "braft-editor": "^2.3.7",
+    "for-editor": "^0.3.5",
     "loadsh": "^0.0.4",
     "mobx": "^5.10.1",
     "mobx-react": "^6.1.1",
@@ -31,6 +32,7 @@
     "@types/react-dom": "^16.9.5",
     "@types/react-test-renderer": "^16.9.2",
     "@types/styled-components": "^5.0.0",
+    "@umijs/preset-react": "^1.2.2",
     "babel-eslint": "^9.0.0",
     "eslint": "^5.4.0",
     "eslint-config-umi": "^1.4.0",
@@ -42,9 +44,7 @@
     "husky": "^0.14.3",
     "lint-staged": "^7.2.2",
     "react-test-renderer": "^16.7.0",
-    "umi": "^2.13.3",
-    "umi-plugin-react": "^1.14.9",
-    "umi-types": "^0.5.12"
+    "umi": "^3.0.0"
   },
   "lint-staged": {
     "*.{js,jsx}": [

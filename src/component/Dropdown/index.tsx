@@ -1,10 +1,10 @@
 import React from 'react';
-import { Menu, Dropdown, Icon, Avatar } from 'antd';
+import { Menu, Dropdown, Avatar } from 'antd';
+import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import { inject, observer } from 'mobx-react';
-import router from 'umi/router';
+import { history } from 'umi';
+
 import coca from '@/coca';
-import { UserModel } from '@/model/user';
 
 const Container = styled.div`
   display: flex;
@@ -18,7 +18,7 @@ export const Item = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  span {
+  .ant-avatar {
     margin-right: 8px;
   }
   &:hover {
@@ -26,30 +26,23 @@ export const Item = styled.div`
   }
 `;
 
-@inject('user')
-@observer
 class UserDropdown extends React.Component<{
-  user?: UserModel;
+  account: string;
+  logout: () => void;
 }> {
-  logout = () => {
-    if (this.props.user) {
-      this.props.user.logout();
-    }
-  };
-
   resetPassword = () => {
-    router.push('/admin/resetPassword');
+    history.push('/admin/resetPassword');
   };
 
   user_menu = (
     <Menu>
       <Menu.Item onClick={this.resetPassword}>
-        <Icon type="user" />
+        <UserOutlined />
         修改密码
       </Menu.Item>
       <Menu.Divider />
-      <Menu.Item onClick={this.logout}>
-        <Icon type="logout" />
+      <Menu.Item onClick={this.props.logout}>
+        <LogoutOutlined />
         退出登录
       </Menu.Item>
     </Menu>
@@ -61,8 +54,8 @@ class UserDropdown extends React.Component<{
         {coca.dropdown}
         <Dropdown overlay={this.user_menu} placement="bottomRight">
           <Item>
-            <Avatar size="small" icon="user" />
-            {this.props.user && this.props.user.info.account}
+            <Avatar size="small" icon={<UserOutlined />} />
+            {this.props.account}
           </Item>
         </Dropdown>
       </Container>

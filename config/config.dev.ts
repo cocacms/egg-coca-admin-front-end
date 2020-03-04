@@ -1,13 +1,11 @@
 // ref: https://umijs.org/config/
-import { IConfig } from 'umi-types';
+import { defineConfig } from 'umi';
 
-const config: IConfig = {
+export default defineConfig({
   publicPath: '/',
   base: '/',
   define: {
     'process.env.APIHOST': 'https://dev.xxx.cn',
     'process.env.APIAUTHNAME': 'Coca_Dev_Authorization',
   },
-};
-
-export default config;
+});

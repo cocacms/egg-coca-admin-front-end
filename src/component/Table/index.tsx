@@ -1,4 +1,3 @@
-import router from 'umi/router';
 import React from 'react';
 import {
   Table,
@@ -13,12 +12,10 @@ import {
   Col,
   Select,
   DatePicker,
-  Tooltip,
-  Icon,
 } from 'antd';
-import { FormComponentProps } from 'antd/es/form';
+import { FormInstance } from 'antd/lib/form';
 import moment from 'moment';
-import withRouter from 'umi/withRouter';
+import { withRouter, history } from 'umi';
 import { IRouteComponentProps } from '@/index';
 import styled from 'styled-components';
 
@@ -31,14 +28,13 @@ const FormItem = styled(Form.Item)`
 
 const defaultPageSize: number = 15;
 interface ICocaTableProps extends IRouteComponentProps {
-  form: FormComponentProps['form'];
   columns: ICocaColumn[];
   load: (params: any) => Promise<any>;
   pageSize?: number;
   componentType: 'table' | 'list';
   bordered?: boolean;
   rowKey?: string;
-  size?: 'small' | 'default' | 'middle';
+  size?: 'small' | 'middle' | 'large' | undefined;
   filters?: ICocaFilter[];
   pagination?: any;
   data?: any;
@@ -66,6 +62,8 @@ class TableWithHandler extends React.Component<ICocaTableProps, ICocaTableState>
     current: 1,
     loading: false,
   };
+
+  form: React.RefObject<FormInstance> = React.createRef();
 
   componentDidMount() {
     setTimeout(this.load, 0);
@@ -105,7 +103,7 @@ class TableWithHandler extends React.Component<ICocaTableProps, ICocaTableState>
     if (location.query.where) query.where = location.query.where;
     query._t = new Date().valueOf();
 
-    router.push({
+    history.push({
       pathname: location.pathname,
       query,
     });
@@ -113,7 +111,7 @@ class TableWithHandler extends React.Component<ICocaTableProps, ICocaTableState>
 
   paginationPageChange = (page: number, pageSize: number) => {
     const { location } = this.props;
-    router.push({
+    history.push({
       pathname: location.pathname,
       query: {
         ...location.query,
@@ -124,8 +122,8 @@ class TableWithHandler extends React.Component<ICocaTableProps, ICocaTableState>
   };
 
   handleReset = () => {
-    this.props.form.resetFields();
-    this.handleSearch();
+    this.form.current?.resetFields();
+    this.handleSearch({});
   };
 
   getPageSize = () => {
@@ -138,26 +136,21 @@ class TableWithHandler extends React.Component<ICocaTableProps, ICocaTableState>
     return Number(location.query.page || 1);
   };
 
-  handleSearch = (e?: any) => {
-    e && e.preventDefault();
+  handleSearch = (values: any) => {
     const { location } = this.props;
 
-    this.props.form.validateFields({ force: true }, (err, values) => {
-      if (!err) {
-        const query: any = {
-          page: 1,
-          pageSize: this.getPageSize(),
-        };
+    const query: any = {
+      page: 1,
+      pageSize: this.getPageSize(),
+    };
 
-        if (location.query.order) query.order = location.query.order;
-        query.where = JSON.stringify(values);
-        query._t = new Date().valueOf();
+    if (location.query.order) query.order = location.query.order;
+    query.where = JSON.stringify(values);
+    query._t = new Date().valueOf();
 
-        router.push({
-          pathname: location.pathname,
-          query,
-        });
-      }
+    history.push({
+      pathname: location.pathname,
+      query,
     });
   };
 
@@ -177,7 +170,10 @@ class TableWithHandler extends React.Component<ICocaTableProps, ICocaTableState>
 
           if (filter.type === 'date') {
             where[key] = {
-              $between: value,
+              $between: [
+                moment(value[0]).format('YYYY-MM-DD 00:00:00'),
+                moment(value[1]).format('YYYY-MM-DD 23:59:59'),
+              ],
             };
           }
         }
@@ -203,7 +199,7 @@ class TableWithHandler extends React.Component<ICocaTableProps, ICocaTableState>
   };
 
   load = async () => {
-    const { location, load, form } = this.props;
+    const { location, load } = this.props;
     if (load) {
       let where = {};
 
@@ -217,7 +213,7 @@ class TableWithHandler extends React.Component<ICocaTableProps, ICocaTableState>
       }
 
       try {
-        form.setFieldsValue(this.hanldeFilterValue(where));
+        this.form.current?.setFieldsValue(this.hanldeFilterValue(where));
         await load({
           ...location.query,
           where: this.handleWhere(where),
@@ -231,72 +227,69 @@ class TableWithHandler extends React.Component<ICocaTableProps, ICocaTableState>
   };
 
   renderSearchComponent(data: ICocaFilter) {
-    const { getFieldDecorator } = this.props.form;
-
     if (data.type === 'text' || data.type === 'like') {
-      return <FormItem label={data.label}>{getFieldDecorator(data.key, {})(<Input />)}</FormItem>;
+      return (
+        <FormItem name={data.key} label={data.label}>
+          <Input />
+        </FormItem>
+      );
     }
 
     if (data.type === 'radio') {
       return (
-        <FormItem label={data.label}>
-          {getFieldDecorator(data.key, {})(<Radio.Group options={data.options} />)}
+        <FormItem name={data.key} label={data.label}>
+          <Radio.Group options={data.options} />
         </FormItem>
       );
     }
 
     if (data.type === 'checkbox') {
       return (
-        <FormItem label={data.label}>
-          {getFieldDecorator(data.key, {})(<Checkbox.Group options={data.options} />)}
+        <FormItem name={data.key} label={data.label}>
+          <Checkbox.Group options={data.options} />
         </FormItem>
       );
     }
 
     if (data.type === 'number') {
       return (
-        <FormItem label={data.label}>
-          {getFieldDecorator(
-            data.key,
-            {},
-          )(<InputNumber style={{ width: '100%' }} {...(data.props || {})} />)}
+        <FormItem name={data.key} label={data.label}>
+          <InputNumber style={{ width: '100%' }} {...(data.props || {})} />
         </FormItem>
       );
     }
 
     if (data.type === 'date') {
       return (
-        <FormItem label={data.label}>
-          {getFieldDecorator(
-            data.key,
-            {},
-          )(<DatePicker.RangePicker {...(data.props || {})} style={{ width: '100%' }} />)}
+        <FormItem name={data.key} label={data.label}>
+          <DatePicker.RangePicker
+            {...(data.props || {})}
+            style={{ width: '100%' }}
+            format="YYYY-MM-DD"
+          />
         </FormItem>
       );
     }
 
     if (data.type === 'select') {
       return (
-        <FormItem label={data.label}>
-          {getFieldDecorator(
-            data.key,
-            {},
-          )(
-            <Select>
-              {(data.options || []).map((i: ICocaOption) => (
-                <Select.Option key={i.value} value={i.value}>
-                  {i.label}
-                </Select.Option>
-              ))}
-            </Select>,
-          )}
+        <FormItem name={data.key} label={data.label}>
+          <Select>
+            {(data.options || []).map((i: ICocaOption) => (
+              <Select.Option key={i.value} value={i.value}>
+                {i.label}
+              </Select.Option>
+            ))}
+          </Select>
         </FormItem>
       );
     }
 
     if (data.component) {
       return (
-        <FormItem label={data.label}>{getFieldDecorator(data.key, {})(data.component)}</FormItem>
+        <FormItem name={data.key} label={data.label}>
+          {data.component}
+        </FormItem>
       );
     }
 
@@ -370,15 +363,8 @@ class TableWithHandler extends React.Component<ICocaTableProps, ICocaTableState>
                 it.sortOrder = order[1] === 'desc' ? 'descend' : 'ascend';
               }
             } catch (error) {
-              it.sortOrder = false;
+              it.sortOrder = null;
             }
-          }
-          if (it.help && typeof it.title === 'string') {
-            it.title = (
-              <Tooltip title={it.help}>
-                {it.title} <Icon type="question-circle" />
-              </Tooltip>
-            );
           }
           return it;
         })}
@@ -392,8 +378,8 @@ class TableWithHandler extends React.Component<ICocaTableProps, ICocaTableState>
     return (
       <div>
         {filters.length > 0 && (
-          <Form onSubmit={this.handleSearch} style={{ margin: 18 }}>
-            <Row gutter={16} type="flex">
+          <Form onFinish={this.handleSearch} ref={this.form} style={{ margin: 18 }}>
+            <Row gutter={16}>
               {filters.map(filter => {
                 return (
                   <Col md={12} xl={6} key={filter.key}>
@@ -422,4 +408,4 @@ class TableWithHandler extends React.Component<ICocaTableProps, ICocaTableState>
   }
 }
 
-export default withRouter(Form.create<ICocaTableProps>()(TableWithHandler));
+export default withRouter(TableWithHandler);
