@@ -1,6 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import styled from 'styled-components';
+import { Layout } from 'antd';
 import { UserModel } from '@/model/user';
 
 const Container = styled.div`
@@ -25,6 +26,4 @@ class Page extends React.Component<IProps> {
   }
 }
 
-Page.title = '数据报表';
-Page.access = 'test';
 export default Page;

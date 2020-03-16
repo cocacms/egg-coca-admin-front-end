@@ -185,7 +185,7 @@ class Pager extends React.Component<ICocaPager> {
                         {this.renderName()}管理
                       </h1>
                     </Col>
-                    <Col>
+                    <Col style={{ textAlign: 'right' }}>
                       {createable && (
                         <Button type="primary" onClick={this.goCreate}>
                           创建{this.renderName()}

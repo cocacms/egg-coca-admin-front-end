@@ -1,6 +1,4 @@
-import { permission } from './service/config';
-
-const check = (userInfo: any, userPermission: string[], permission: string) => () => {
+const check = (userInfo: any, userPermission: string[], permission: string) => {
   if (!userInfo || !userInfo.id) {
     return false;
   }
@@ -21,10 +19,10 @@ const check = (userInfo: any, userPermission: string[], permission: string) => (
 };
 
 export default function(initialState: any = {}) {
-  const { userInfo } = initialState;
-  let UserAllPermission: string[] = [];
+  const { userInfo = {}, permission = [] } = initialState;
+  let userAllPermission: string[] = [];
   if (userInfo && userInfo.roles) {
-    UserAllPermission = userInfo.roles.reduce((pre: string[], role: any) => {
+    userAllPermission = userInfo.roles.reduce((pre: string[], role: any) => {
       for (const permission of role.permission) {
         pre.push(permission);
       }
@@ -32,13 +30,12 @@ export default function(initialState: any = {}) {
     }, []);
   }
 
-  UserAllPermission = Array.from(new Set(UserAllPermission));
+  userAllPermission = Array.from(new Set(userAllPermission));
 
   const returns: any = {};
-  for (const permission of UserAllPermission) {
-    returns[permission] = check(userInfo, UserAllPermission, permission);
+  for (const permissionKey of Object.keys(permission)) {
+    returns[permissionKey] = check(userInfo, userAllPermission, permissionKey);
   }
 
-  returns.__check__ = check(userInfo, UserAllPermission, '');
   return returns;
 }

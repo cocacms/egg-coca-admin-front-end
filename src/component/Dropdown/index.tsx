@@ -31,7 +31,7 @@ class UserDropdown extends React.Component<{
   logout: () => void;
 }> {
   resetPassword = () => {
-    history.push('/admin/resetPassword');
+    history.push('/password');
   };
 
   user_menu = (

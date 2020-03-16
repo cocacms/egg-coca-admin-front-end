@@ -3,10 +3,11 @@ import { Layout, Tag } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { Link, useModel } from 'umi';
-import theme from '../../../config/theme';
+import { inject, observer } from 'mobx-react';
 import Menu from '@/component/Menu';
 import HeaderDropdown from '@/component/Dropdown';
-import { inject, observer } from 'mobx-react';
+
+import theme from '@/../config/theme';
 
 const { Header, Sider, Content, Footer } = Layout;
 
@@ -76,7 +77,8 @@ interface IProps {
 }
 
 const AdminLayout: React.FC<IProps> = inject('user')(
-  observer(({ children, user }) => {
+  observer(props => {
+    const { children, user } = props;
     const [collapsed, setCollapsed] = useState(false);
 
     const { refresh } = useModel('@@initialState');

@@ -81,7 +81,7 @@ class Login extends Component<IProps, IState> {
             </FormItem>
 
             <FormItem>
-              <Button type="primary" htmlType="submit" className="login-form-button">
+              <Button type="primary" htmlType="submit">
                 修改密码
               </Button>
             </FormItem>

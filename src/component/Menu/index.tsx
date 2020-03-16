@@ -18,14 +18,12 @@ const MenuItem: React.FC<IMenuItem> = props => <Menu.Item {...props}>{props.chil
 
 const getMenuItem = (it: ICocaMenu) => {
   const access = useAccess();
+  let is: boolean = false;
 
-  let is: boolean = true;
   if (it.access) {
-    if (access[it.access]) {
-      is = access[it.access]();
-    } else {
-      is = access.__check__();
-    }
+    is = access[it.access];
+  } else {
+    is = true;
   }
 
   if (is !== true) {

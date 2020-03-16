@@ -1,13 +1,14 @@
 import React from 'react';
 import { history } from 'umi';
-import { Button, message, notification, Spin } from 'antd';
+import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import Auth from '@/wrappers/auth';
 import user from '@/model/user';
 import { permission, setting } from '@/service/config';
 
 Spin.setDefaultIndicator(<LoadingOutlined />);
 
-const renderAsync = async () => {
+const getUserInfo = async () => {
   let Authorization =
     localStorage[process.env.APIAUTHNAME || 'process.env.APIAUTHNAME'] ||
     sessionStorage[process.env.APIAUTHNAME || 'process.env.APIAUTHNAME'];
@@ -23,14 +24,7 @@ export async function getInitialState() {
   const { data: settingData } = await setting();
   let userInfo: ICocaUserInfo;
   try {
-    userInfo = await renderAsync();
-
-    let need_jump = false;
-
-    if (['/login', '/'].includes(history.location.pathname)) {
-      need_jump = true;
-    }
-    if (need_jump) history.replace(`/admin`);
+    userInfo = await getUserInfo();
   } catch (error) {
     userInfo = {};
     history.replace('/login');
@@ -43,60 +37,19 @@ export async function getInitialState() {
   };
 }
 
-/**
- * 以下代码参考自 ant-design-pro
- */
-
-// if pwa is true
-
-// Notify user if offline now
-window.addEventListener('sw.offline', () => {
-  message.warning('网络已断开，请检查网络。');
-});
-
-// Pop up a prompt on the page asking the user if they want to use the latest version
-window.addEventListener('sw.updated', (event: Event) => {
-  const e = event as CustomEvent;
-  const reloadSW = async () => {
-    // Check if there is sw whose state is waiting in ServiceWorkerRegistration
-    // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration
-    const worker = e.detail && e.detail.waiting;
-    if (!worker) {
-      return true;
+const patchRoute = (routes: any) => {
+  for (const route of routes) {
+    if (route.access) {
+      if (!route.wrappers) route.wrappers = [];
+      route.wrappers.push(Auth);
     }
-    // Send skip-waiting event to waiting SW with MessageChannel
-    await new Promise((resolve, reject) => {
-      const channel = new MessageChannel();
-      channel.port1.onmessage = msgEvent => {
-        if (msgEvent.data.error) {
-          reject(msgEvent.data.error);
-        } else {
-          resolve(msgEvent.data);
-        }
-      };
-      worker.postMessage({ type: 'skip-waiting' }, [channel.port2]);
-    });
-    // Refresh current page to use the updated HTML and other assets after SW has skiped waiting
-    window.location.reload(true);
-    return true;
-  };
-  const key = `open${Date.now()}`;
-  const btn = (
-    <Button
-      type="primary"
-      onClick={() => {
-        notification.close(key);
-        reloadSW();
-      }}
-    >
-      刷新
-    </Button>
-  );
-  notification.open({
-    message: '有新内容',
-    description: '请点击“刷新”按钮或者手动刷新页面',
-    btn,
-    key,
-    onClose: async () => {},
-  });
-});
+
+    if (route.routes) {
+      patchRoute(route.routes);
+    }
+  }
+};
+
+export function patchRoutes({ routes }: { routes: any }) {
+  patchRoute(routes);
+}

@@ -6,13 +6,13 @@ const coca: ICoca = {
   model: ['role', 'setting'],
   menu: [
     {
-      key: '/admin',
+      key: '/',
       icon: <HomeOutlined />,
       name: '首页',
     },
 
     {
-      key: '/admin/setting/1?back=0',
+      key: '/setting',
       icon: <SettingOutlined />,
       name: '系统配置',
       access: 'setting',
@@ -24,14 +24,14 @@ const coca: ICoca = {
       name: '账户与权限',
       sub: [
         {
-          key: '/admin/user',
+          key: '/user',
           icon: <TeamOutlined />,
           name: '后台账号',
           access: 'user',
         },
 
         {
-          key: '/admin/role',
+          key: '/role',
           icon: <IdcardOutlined />,
           name: '角色权限',
           access: 'role',

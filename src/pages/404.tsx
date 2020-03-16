@@ -7,13 +7,13 @@ const The404: React.FC = () => {
   return (
     <Result
       status="404"
-      subTitle="Sorry, the page you visited is building OR does not exist."
+      subTitle="对不起，您访问的页面不存在。"
       title="404"
       extra={
         <Button
           type="primary"
           onClick={() => {
-            history.replace('/admin');
+            history.replace('/');
           }}
         >
           返回首页

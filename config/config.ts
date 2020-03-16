@@ -1,6 +1,7 @@
 // ref: https://umijs.org/config/
 import { defineConfig } from 'umi';
 import theme from './theme';
+import routes from './route';
 
 export default defineConfig({
   history: {
@@ -24,4 +25,5 @@ export default defineConfig({
     loading: '@/component/Loading/index.tsx',
   },
   title: 'Coca管理平台',
+  routes,
 });
