@@ -1,24 +1,19 @@
 import { observable, action } from 'mobx';
 import { actionAsync, task } from 'mobx-utils';
-import { login, info, resetPassword } from '@/service/user';
+import { login, info, reset_password } from '@/service/user';
 import { history } from 'umi';
-import CurdModel from './curd';
 import curdApuBuilder from '@/service/curd';
 
 export interface UserModel {
   info: ICocaUserInfo;
   login(mail: string, password: string, remember: boolean): Promise<any>;
-  resetPassword(password: string, newpassword: string): Promise<any>;
+  reset_password(password: string, newpassword: string): Promise<any>;
   loadInfo(force: boolean): Promise<any>;
   logout(): void;
 }
 
-class Model extends CurdModel implements UserModel {
+class Model implements UserModel {
   @observable info: ICocaUserInfo | any = {};
-
-  constructor() {
-    super(curdApuBuilder('user'));
-  }
 
   @actionAsync
   async login(mail: string, password: string, remember: boolean) {
@@ -33,8 +28,8 @@ class Model extends CurdModel implements UserModel {
   }
 
   @actionAsync
-  async resetPassword(password: string, newpassword: string) {
-    await task(resetPassword(password, newpassword));
+  async reset_password(password: string, newpassword: string) {
+    await task(reset_password(password, newpassword));
   }
 
   @actionAsync

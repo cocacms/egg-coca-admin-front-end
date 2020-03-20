@@ -1,15 +1,15 @@
 import React from 'react';
 
-import { Divider, Popconfirm } from 'antd';
-import styled from 'styled-components';
+import { Divider, Popconfirm, Button } from 'antd';
+// import styled from 'styled-components';
 
-const A = styled.span`
-  color: ${props => (props.color ? props.color : 'rgba(0, 0, 0, 0.65)')};
-  &:hover {
-    color: ${props => (props.color ? props.color : 'rgba(0, 0, 0, 0.65)')};
-  }
-  cursor: pointer;
-`;
+// const A = styled.span`
+//   color: ${props => (props.color ? props.color : 'rgba(0, 0, 0, 0.65)')};
+//   &:hover {
+//     color: ${props => (props.color ? props.color : 'rgba(0, 0, 0, 0.65)')};
+//   }
+//   cursor: pointer;
+// `;
 
 const getActionItem = (item: ICocaAction): React.ReactElement => {
   if (!item) return item;
@@ -24,15 +24,23 @@ const getActionItem = (item: ICocaAction): React.ReactElement => {
         cancelText="否"
         onConfirm={item.onClick}
       >
-        <A color={item.color}>{item.title}</A>
+        <Button type="link" loading={item.loading} danger={item.danger}>
+          {item.title}
+        </Button>
       </Popconfirm>
     );
   }
 
   return (
-    <A color={item.color} key={item.key} onClick={item.onClick}>
+    <Button
+      danger={item.danger}
+      type="link"
+      loading={item.loading}
+      key={item.key}
+      onClick={item.onClick}
+    >
       {item.title}
-    </A>
+    </Button>
   );
 };
 

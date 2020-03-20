@@ -58,7 +58,7 @@ export default () => {
   ];
 
   const initialValues = (v: any) => {
-    v.roles = (v.roles || []).map((i: any) => i.id);
+    v.roles = (v.roles || []).map((i: any) => i?.id);
     v.password = '';
     return v;
   };

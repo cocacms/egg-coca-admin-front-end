@@ -24,7 +24,7 @@ class Login extends Component<IProps, IState> {
   form: React.RefObject<FormInstance> = React.createRef();
 
   handleSubmit = async (values: any) => {
-    await this.props.user.resetPassword(values.password, values.newpassword);
+    await this.props.user.reset_password(values.password, values.newpassword);
     message.success('密码修改成功！');
   };
 

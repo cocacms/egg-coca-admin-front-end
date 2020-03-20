@@ -6,7 +6,7 @@ export const login = async (account: string, password: string, remember: boolean
   return await axios.post(`${api}/login`, { account, password, remember });
 };
 
-export const resetPassword = async (password: string, newpassword: string): Promise<any> => {
+export const reset_password = async (password: string, newpassword: string): Promise<any> => {
   return await axios.post(`${api}/reset`, { password, newpassword });
 };
 

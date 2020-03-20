@@ -14,19 +14,21 @@ export default () => {
     <Pager
       name="角色"
       model="role"
-      columns={[
-        {
-          title: '角色名',
-          dataIndex: 'name',
-        },
-        {
-          title: '权限',
-          dataIndex: 'permission',
-          render: (text: string[]) => {
-            return (text || []).map((i: string) => initialState?.permission[i]).join('、') || '-';
+      table={{
+        columns: [
+          {
+            title: '角色名',
+            dataIndex: 'name',
           },
-        },
-      ]}
+          {
+            title: '权限',
+            dataIndex: 'permission',
+            render: (text: string[]) => {
+              return (text || []).map((i: string) => initialState?.permission[i]).join('、') || '-';
+            },
+          },
+        ],
+      }}
     />
   );
 };

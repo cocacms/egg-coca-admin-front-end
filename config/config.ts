@@ -12,6 +12,7 @@ export default defineConfig({
   define: {
     'process.env.APIHOST': 'http://localhost:7001',
     'process.env.APIAUTHNAME': 'Coca_Local_Authorization',
+    'process.env.APIPREFIX': '/backend',
     'process.env.TITLE': 'Coca管理平台',
     'process.env.ENV': 'dev',
     'process.env.VERSION': '1.0.0',

@@ -45,7 +45,8 @@ interface ICocaOption {
 interface ICocaAction {
   key: string;
   title: string;
-  color?: string;
+  loading?: boolean;
+  danger?: boolean;
   onClick?: (e?: React.MouseEvent<HTMLElement>) => void;
   confirm?: string;
 }

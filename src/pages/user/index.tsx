@@ -17,7 +17,7 @@ export default () => {
       title: '分配角色',
       dataIndex: 'roles',
       render: (text: any) => {
-        return text.map((i: any) => i.name).join('、') || '-';
+        return (text || []).map((i: any) => i.name).join('、') || '-';
       },
     },
     {
@@ -47,6 +47,14 @@ export default () => {
   };
 
   return (
-    <Pager name="账号管理" model="user" columns={columns} filters={filters} query={query}></Pager>
+    <Pager
+      name="账号管理"
+      model="user"
+      query={query}
+      filters={filters}
+      table={{
+        columns,
+      }}
+    ></Pager>
   );
 };

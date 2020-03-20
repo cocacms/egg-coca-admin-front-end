@@ -30,13 +30,13 @@ class UserDropdown extends React.Component<{
   account: string;
   logout: () => void;
 }> {
-  resetPassword = () => {
+  reset_password = () => {
     history.push('/password');
   };
 
   user_menu = (
     <Menu>
-      <Menu.Item onClick={this.resetPassword}>
+      <Menu.Item onClick={this.reset_password}>
         <UserOutlined />
         修改密码
       </Menu.Item>

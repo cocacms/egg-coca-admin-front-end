@@ -1,40 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Checkbox } from 'antd';
-import { inject, observer } from 'mobx-react';
-import { CurdModal } from '@/model/curd';
-import { CheckboxValueType } from 'antd/es/checkbox/Group';
+import curd from '@/service/curd';
+import { useControllableValue } from '@umijs/hooks';
 
-@inject('role')
-@observer
-class Component extends React.Component<{
-  role?: CurdModal;
-  onChange?: (checkedValue: Array<CheckboxValueType>) => void;
-  value?: Array<CheckboxValueType>;
-}> {
-  componentDidMount() {
-    if (this.props.role) {
-      this.props.role.reset('all', []);
-    }
-    this.load();
-  }
+const RoleSelect: React.FC<{}> = props => {
+  const [roles, setRoles] = useState([]);
+  const [value, onChange] = useControllableValue(props);
 
-  load = async () => {
-    if (this.props.role) {
-      await this.props.role.index({}, false);
-    }
-  };
+  useEffect(() => {
+    const rolecurd = curd('role');
 
-  render() {
-    const { role } = this.props;
-    const all = role ? role.all : [];
+    rolecurd
+      .index({ pager: false })
+      .then(({ data }) => data)
+      .then(setRoles);
+  }, [setRoles]);
+  return (
+    <Checkbox.Group
+      options={roles.map((i: any) => ({ label: i.name, value: i.id }))}
+      onChange={onChange}
+      value={value}
+    />
+  );
+};
 
-    return (
-      <Checkbox.Group
-        options={all.map((i: any) => ({ label: i.name, value: i.id }))}
-        onChange={this.props.onChange}
-        value={this.props.value}
-      />
-    );
-  }
-}
-export default Component;
+export default RoleSelect;

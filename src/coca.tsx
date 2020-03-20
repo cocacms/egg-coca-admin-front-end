@@ -12,7 +12,7 @@ const coca: ICoca = {
     },
 
     {
-      key: '/setting',
+      key: '/setting?back=0',
       icon: <SettingOutlined />,
       name: '系统配置',
       access: 'setting',
