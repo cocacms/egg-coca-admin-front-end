@@ -1,9 +1,3 @@
-/**
- * title: 编辑角色
- * authority:
- *  - role
- */
-
 import React from 'react';
 import { Editor } from '@/component/Pager';
 import { useModel } from 'umi';

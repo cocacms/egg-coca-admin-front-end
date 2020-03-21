@@ -33,6 +33,7 @@ interface RouterInfo {
 }
 
 const getFormProps = (props: any | ((data: any) => any), data = {}) => {
+  if (!data) data = {};
   if (typeof props === 'function') return props(data);
   return props || {};
 };
@@ -154,7 +155,9 @@ const Edit: React.FC<ICocaEditorProps & IRouteComponentProps<RouterInfo>> = ({
   const isUpdate = id !== '0';
   const [form] = Form.useForm();
 
-  const { data, loading: detail_loading } = useDetail(model, id, query);
+  const { data, loading: detail_loading } = useDetail(model, {
+    defaultParams: [id, query],
+  });
 
   const action = useAction(model, id, links);
   const submit = async (values: any) => {

@@ -15,6 +15,7 @@
     "@umijs/hooks": "^1.7.1",
     "axios": "^0.19.0",
     "braft-editor": "^2.3.7",
+    "file-saver": "^2.0.2",
     "for-editor": "^0.3.5",
     "loadsh": "^0.0.4",
     "mobx": "^5.10.1",
@@ -26,6 +27,7 @@
     "xlsx": "^0.15.1"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.1",
     "@types/jest": "^25.1.3",
     "@types/lodash": "^4.14.149",
     "@types/node": "^13.7.4",

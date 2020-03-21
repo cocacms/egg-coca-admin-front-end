@@ -7,6 +7,7 @@ import React from 'react';
 import { Editor } from '@/component/Pager';
 import RoleSelect from '@/component/RoleSelect';
 import { useModel } from 'umi';
+import model from './model';
 
 export default () => {
   const { refresh } = useModel('@@initialState');
@@ -57,23 +58,18 @@ export default () => {
     },
   ];
 
-  const initialValues = (v: any) => {
-    v.roles = (v.roles || []).map((i: any) => i?.id);
-    v.password = '';
-    return v;
-  };
-
   const hook = {
-    after: refresh,
+    after: refresh, // 刷新权限
   };
 
   return (
     <Editor
       model="user"
+      query={model.query}
       name="管理员账号"
       links={['Roles']}
       forms={forms}
-      initialValues={initialValues}
+      initialValues={model.initialValues}
       hook={hook}
     />
   );

@@ -1,11 +1,6 @@
-/**
- * title:
- *  管理账号管理
- * authority:
- *  - user
- */
-import React, { useState } from 'react';
+import React from 'react';
 import Pager from '@/component/Pager';
+import model from './model';
 
 export default () => {
   const columns = [
@@ -32,26 +27,12 @@ export default () => {
     },
   ];
 
-  const filters = [
-    { key: 'account', label: '账号', type: 'text' },
-    { key: 'createdAt', label: '创建时间', type: 'date' },
-  ];
-
-  const query = {
-    include: [
-      {
-        association: 'roles',
-        attributes: ['id', 'name'],
-      },
-    ],
-  };
-
   return (
     <Pager
       name="账号管理"
       model="user"
-      query={query}
-      filters={filters}
+      query={model.query}
+      filters={model.filters}
       table={{
         columns,
       }}

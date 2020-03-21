@@ -8,10 +8,14 @@ const formatResult = (response: any) => {
   return data || {};
 };
 
-export const useDetail = (model: string, id: string, query?: any) => {
+export const useDetail = (model: string, options: any = {}) => {
+  let manual = true;
+  if (options?.defaultParams) manual = false;
   const load = useRequest(
-    () => axios.get(`${process.env.APIPREFIX}/${model}/${id}`, { params: { ...query } }),
+    (id, query) => axios.get(`${process.env.APIPREFIX}/${model}/${id}`, { params: { ...query } }),
     {
+      ...options,
+      manual,
       initialData: {},
       formatResult,
     },

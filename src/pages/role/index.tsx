@@ -1,9 +1,3 @@
-/**
- * title: 管理角色
- * authority:
- *  - role
- */
-
 import React from 'react';
 import Pager from '@/component/Pager';
 import { useModel } from 'umi';
