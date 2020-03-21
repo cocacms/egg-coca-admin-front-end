@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Form,
   Input,
@@ -6,18 +6,14 @@ import {
   Button,
   Divider,
   message,
-  Skeleton,
+  Spin,
   Radio,
   InputNumber,
   Switch,
   Select,
 } from 'antd';
-import axios from '@/util/axios';
-import { FormInstance } from 'antd/lib/form';
-import { history, withRouter } from 'umi';
-import _ from 'loadsh';
-import { useRequest } from '@umijs/hooks';
 
+import { history, withRouter } from 'umi';
 import { IRouteComponentProps } from '@/index';
 import RichEditor from '@/component/RichEditor';
 import MarkdownEditor from '@/component/MarkdownEditor';
@@ -25,6 +21,7 @@ import Upload from '@/component/Upload';
 import Back from '@/component/Back';
 
 import { Box, formItemLayout, tailFormItemLayout } from './form';
+import { useAction, useDetail } from './hook';
 
 interface Hook {
   before?: (value: any) => any;
@@ -140,10 +137,6 @@ interface ICocaEditorProps {
   initialValues?: (v: any) => any;
 }
 
-const formatResult = (response: any) => {
-  const { data } = response;
-  return data || {};
-};
 const Edit: React.FC<ICocaEditorProps & IRouteComponentProps<RouterInfo>> = ({
   model,
   name,
@@ -151,75 +144,31 @@ const Edit: React.FC<ICocaEditorProps & IRouteComponentProps<RouterInfo>> = ({
   children,
   match,
   key = 'id',
-  query = {},
   hook = {},
   links = [],
+  query = {},
   initialValues = v => v,
   location,
 }) => {
   const id = match.params[key];
   const isUpdate = id !== '0';
+  const [form] = Form.useForm();
 
-  /**
-   * load data
-   */
+  const { data, loading: detail_loading } = useDetail(model, id, query);
 
-  const load = useRequest(
-    () => axios.get(`${process.env.APIPREFIX}/${model}/${id}`, { params: { ...query } }),
-    {
-      refreshDeps: [id],
-      initialData: {},
-      formatResult,
-    },
-  );
-
-  const { data } = load;
-
-  const create = useRequest(
-    data =>
-      axios.post(`${process.env.APIPREFIX}/${model}`, data, {
-        params: {
-          links,
-        },
-      }),
-    {
-      formatResult,
-      manual: true,
-    },
-  );
-
-  const update = useRequest(
-    data =>
-      axios.put(`${process.env.APIPREFIX}/${model}/${id}`, data, {
-        params: {
-          links,
-        },
-      }),
-    {
-      formatResult,
-      manual: true,
-    },
-  );
-
-  const action = isUpdate ? update : create;
-
+  const action = useAction(model, id, links);
   const submit = async (values: any) => {
     if (hook && hook.before) {
       values = hook.before(values);
     }
-
     const result = await action.run(values);
-
     if (hook && hook.after) {
       hook.after(result);
     }
-
     message.success('操作成功！');
-
     if (location.query.back !== '0') history.goBack();
   };
 
-  const [form] = Form.useForm();
   return (
     <Box>
       <h1>
@@ -228,9 +177,10 @@ const Edit: React.FC<ICocaEditorProps & IRouteComponentProps<RouterInfo>> = ({
       </h1>
       <Divider />
       {children}
-
-      {load.loading ? (
-        <Skeleton active />
+      {detail_loading ? (
+        <Spin tip="加载中...">
+          <div style={{ width: '100%', minHeight: 500 }} />
+        </Spin>
       ) : (
         <Form {...formItemLayout} initialValues={initialValues(data)} form={form} onFinish={submit}>
           {forms.map((form: ICocaForm) => (

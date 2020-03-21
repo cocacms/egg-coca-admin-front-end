@@ -75,14 +75,6 @@ export default () => {
       forms={forms}
       initialValues={initialValues}
       hook={hook}
-      query={{
-        include: [
-          {
-            association: 'roles',
-            attributes: ['id', 'name'],
-          },
-        ],
-      }}
     />
   );
 };

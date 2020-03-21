@@ -2,7 +2,6 @@ import { observable, action } from 'mobx';
 import { actionAsync, task } from 'mobx-utils';
 import { login, info, reset_password } from '@/service/user';
 import { history } from 'umi';
-import curdApuBuilder from '@/service/curd';
 
 export interface UserModel {
   info: ICocaUserInfo;

@@ -16,17 +16,17 @@ import {
   Select,
   DatePicker,
 } from 'antd';
-import { useFormTable, useRequest } from '@umijs/hooks';
 import Action from '@/component/Action';
 import Back from '@/component/Back';
-import axios from '@/util/axios';
 import { history, withRouter } from 'umi';
 import { IRouteComponentProps } from '@/index';
 
 import { FormInstance } from 'antd/lib/form';
-import moment from 'moment';
 import { Box } from './form';
 import Editor from './editor';
+
+import { useTableList, useDelete } from './hook';
+
 export { Editor, Box };
 
 const FormItem = styled(Form.Item)`
@@ -162,56 +162,6 @@ const Header: React.FC<{
   );
 };
 
-const handleParams = ({ current, pageSize, sorter: s, filters: f }: any, formData: Object) => {
-  const params: any = { page: current, pageSize };
-  if (s?.field && s?.order) {
-    params.order = JSON.stringify([s?.field, s?.order === 'descend' ? 'desc' : 'asc']);
-  }
-  if (formData) {
-    const where: any = {};
-    Object.entries(formData).forEach(([filed, value]) => {
-      where[filed] = value;
-    });
-    params.where = where;
-  }
-
-  return params;
-};
-
-const handleWhere = (filters: ICocaFilter[] = [], where: any = {}) => {
-  for (const key in where) {
-    if (where.hasOwnProperty(key) && where[key]) {
-      const value = where[key];
-      const filter = filters.find((i: ICocaFilter) => i.key === key);
-      if (filter) {
-        if (filter.type === 'like') {
-          where[key] = {
-            $like: `%${value}%`,
-          };
-        }
-
-        if (filter.type === 'date') {
-          where[key] = {
-            $between: [
-              moment(value[0]).format('YYYY-MM-DD 00:00:00'),
-              moment(value[1]).format('YYYY-MM-DD 23:59:59'),
-            ],
-          };
-        }
-      }
-    }
-  }
-  return where;
-};
-
-const formatResult = (response: any) => {
-  const { data } = response;
-  return {
-    total: data.count,
-    list: data.rows,
-  };
-};
-
 const Pager: React.FC<{
   model: string;
   type?: 'table' | 'list';
@@ -251,25 +201,7 @@ const Pager: React.FC<{
    * table数据请求部分
    */
   const [form] = Form.useForm();
-  const { tableProps, params, refresh, search } = useFormTable(
-    (pginatedParams: any, formData: Object) => {
-      const params = handleParams(pginatedParams, formData);
-      params.where = JSON.stringify(handleWhere(filters, params.where));
-      return axios.get(`${process.env.APIPREFIX}/${model}`, {
-        params: {
-          ...params,
-          ...query,
-        },
-      });
-    },
-    {
-      cacheKey: `tablelist_${model}`,
-      form,
-      defaultPageSize: 20,
-      formatResult: formatResult,
-    },
-  );
-
+  const { tableProps, params, refresh, search } = useTableList(model, filters, form, query);
   const { sorter = {} } = params[0] || ({} as any);
   const { submit, reset } = search;
 
@@ -277,13 +209,7 @@ const Pager: React.FC<{
    * 删除
    */
 
-  const deleteAction = useRequest(
-    (id: string) => axios.delete(`${process.env.APIPREFIX}/${model}/${id}`),
-    {
-      manual: true,
-      fetchKey: id => id,
-    },
-  );
+  const deleteAction = useDelete(model);
 
   const onDelete = async (id: string) => {
     await deleteAction.run(id);
@@ -294,7 +220,7 @@ const Pager: React.FC<{
   /**
    * 创建
    */
-  const onCreate = () => {
+  const onCreate = async () => {
     history.push(`${location.pathname}/0`);
   };
 
@@ -302,7 +228,7 @@ const Pager: React.FC<{
    * 编辑
    * @param id
    */
-  const onEdit = (id: number) => {
+  const onEdit = async (id: string) => {
     history.push(`${location.pathname}/${id}`);
   };
 
