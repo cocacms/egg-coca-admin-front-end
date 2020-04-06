@@ -9,7 +9,7 @@ const request = axios.create({
 });
 
 request.interceptors.request.use(
-  function(config) {
+  function (config) {
     let Authorization =
       localStorage[process.env.APIAUTHNAME || 'process.env.APIAUTHNAME'] ||
       sessionStorage[process.env.APIAUTHNAME || 'process.env.APIAUTHNAME'];
@@ -19,13 +19,13 @@ request.interceptors.request.use(
 
     return config;
   },
-  function(error) {
+  function (error) {
     return Promise.reject(error);
   },
 );
 
 request.interceptors.response.use(
-  function(response) {
+  function (response) {
     if (response.status >= 200 && response.status < 300) {
       return response;
     }
@@ -45,9 +45,9 @@ request.interceptors.response.use(
     }
 
     message.error(msg);
-    return Promise.reject(msg);
+    return Promise.reject(new Error(msg));
   },
-  function(error) {
+  function (error) {
     const messageMap: { [index: string]: string } = {
       'Network Error': '无法访问服务器',
     };

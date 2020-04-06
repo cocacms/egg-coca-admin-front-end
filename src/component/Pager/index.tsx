@@ -223,7 +223,8 @@ const Pager: React.FC<
   const deleteAction = useDelete(model);
 
   const onDelete = async (id: string) => {
-    await deleteAction.run(id);
+    const result = await deleteAction.run(id);
+    if (result instanceof Error) return;
     await refresh();
     message.success('删除成功');
   };

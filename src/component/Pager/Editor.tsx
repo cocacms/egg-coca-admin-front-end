@@ -183,6 +183,7 @@ const Edit: React.FC<ICocaEditorProps & IRouteComponentProps<RouterInfo>> = ({
       values = hook.before(values);
     }
     const result = await action.run(values);
+    if (result instanceof Error) return;
     if (hook && hook.after) {
       hook.after(result);
     }
