@@ -52,7 +52,35 @@ const FormItem: React.FC<{
 
   const formProps = getFormProps(form.props, data);
   const formOptions = getFormOptions(form.options);
-  const fieldProps: any = {};
+  const fieldProps: any = {
+    rules: [],
+  };
+
+  const dataTypes: any = {
+    string: 'string',
+    text: 'string',
+    radio: 'string',
+    checkbox: 'array',
+    select: 'string',
+    number: 'number',
+    switch: 'boolean',
+    rich: 'string',
+    markdown: 'string',
+    img: () => (formProps.max === 1 ? 'string' : 'array'),
+  };
+
+  if (form.required) {
+    let dataType = form.dataType;
+    if (!dataType) {
+      dataType =
+        typeof dataTypes[form.type] === 'function' ? dataTypes[form.type]() : dataTypes[form.type];
+    }
+    fieldProps.rules.push({
+      type: dataType,
+      required: true,
+      message: `请设置${form.label}`,
+    });
+  }
 
   if (form.type === 'string') {
     field = <Input {...formProps} />;
@@ -73,7 +101,7 @@ const FormItem: React.FC<{
   if (form.type === 'select') {
     field = (
       <Select showSearch {...formProps}>
-        {formOptions.map(i => (
+        {formOptions.map((i) => (
           <Select.Option key={i.value} value={i.value}>
             {i.label}
           </Select.Option>
@@ -93,16 +121,6 @@ const FormItem: React.FC<{
 
   if (form.type === 'img') {
     const props = formProps;
-
-    if (form.required) {
-      fieldProps.rules.push({
-        type: props.max === 1 ? 'string' : 'array',
-        required: true,
-        message: `请上传${form.label}`,
-      });
-      delete form.required;
-    }
-
     field = <Upload {...props} />;
   }
 
@@ -121,7 +139,7 @@ const FormItem: React.FC<{
   fieldProps.name = form.name;
   fieldProps.label = form.label;
   fieldProps.required = form.required;
-  fieldProps.rules = form.rules;
+  fieldProps.rules = [...fieldProps.rules, ...(form.rules || [])];
   fieldProps.extra = form.extra;
 
   return <Form.Item {...fieldProps}>{field}</Form.Item>;
@@ -148,7 +166,7 @@ const Edit: React.FC<ICocaEditorProps & IRouteComponentProps<RouterInfo>> = ({
   hook = {},
   links = [],
   query = {},
-  initialValues = v => v,
+  initialValues = (v) => v,
   location,
 }) => {
   const id = match.params[key];
