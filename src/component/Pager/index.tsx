@@ -115,6 +115,15 @@ const FilterBar: React.FC<{
   return (
     <Form onReset={reset} onFinish={submit} form={form} style={{ margin: 18 }}>
       <Row gutter={16}>
+        <Col md={12} xl={6}>
+          <SearchItem
+            data={{
+              type: 'text',
+              key: 'id',
+              label: 'ID',
+            }}
+          />
+        </Col>
         {filters.map((filter: ICocaFilter) => {
           return (
             <Col md={12} xl={6} key={filter.key}>
@@ -162,27 +171,29 @@ const Header: React.FC<{
   );
 };
 
-const Pager: React.FC<{
-  model: string;
-  type?: 'table' | 'list';
-  name: string | React.ReactNode;
-  filters?: ICocaFilter[];
-  createable?: boolean;
-  bordered?: boolean;
-  query?: any;
-  table?: {
-    rowKey?: string;
-    columns: ICocaColumn[];
-    editable?: boolean;
-    deleteable?: boolean;
-    actions?: ICocaAction[] | ((record: any) => ICocaAction[]);
-  };
+const Pager: React.FC<
+  {
+    model: string;
+    type?: 'table' | 'list';
+    name: string | React.ReactNode;
+    filters?: ICocaFilter[];
+    createable?: boolean;
+    bordered?: boolean;
+    query?: any;
+    table?: {
+      rowKey?: string;
+      columns: ICocaColumn[];
+      editable?: boolean;
+      deleteable?: boolean;
+      actions?: ICocaAction[] | ((record: any) => ICocaAction[]);
+    };
 
-  list?: {
-    renderItem?: (item: any) => React.ReactNode;
-    grid?: any;
-  };
-} & IRouteComponentProps> = ({
+    list?: {
+      renderItem?: (item: any) => React.ReactNode;
+      grid?: any;
+    };
+  } & IRouteComponentProps
+> = ({
   model,
   type = 'table',
   createable = true,
@@ -245,7 +256,7 @@ const Pager: React.FC<{
         sortOrder: sorter.field === 'id' && sorter.order,
         render: (text: any) => (text ? text : '-'),
       },
-      ...columns.map(column => {
+      ...columns.map((column) => {
         if (column.sorter) {
           column.sortOrder = sorter.field === column.dataIndex && sorter.order;
         }
@@ -338,9 +349,7 @@ const Pager: React.FC<{
     <Box>
       <Header name={name} createable={createable} onCreate={onCreate} />
       <Divider />
-      {filters.length > 0 && (
-        <FilterBar filters={filters} submit={submit} reset={reset} form={form} />
-      )}
+      <FilterBar filters={filters} submit={submit} reset={reset} form={form} />
       <Table bordered={bordered} columns={column_props()} rowKey={rowKey} {...tableProps} />
     </Box>
   );
