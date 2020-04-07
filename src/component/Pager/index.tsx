@@ -18,8 +18,7 @@ import {
 } from 'antd';
 import Action from '@/component/Action';
 import Back from '@/component/Back';
-import { history, withRouter } from 'umi';
-import { IRouteComponentProps } from '@/index';
+import { history, useLocation } from 'umi';
 
 import { FormInstance } from 'antd/lib/form';
 import { Box } from './form';
@@ -27,6 +26,11 @@ import Editor from './editor';
 
 import { useTableList, useDelete } from './hook';
 
+export interface PagerInstance {
+  onDelete: () => void;
+  onCreate: () => void;
+  onEdit: () => void;
+}
 export { Editor, Box };
 
 const FormItem = styled(Form.Item)`
@@ -171,43 +175,43 @@ const Header: React.FC<{
   );
 };
 
-const Pager: React.FC<
+export interface PagerProps {
+  model: string;
+  type?: 'table' | 'list';
+  name: string | React.ReactNode;
+  filters?: ICocaFilter[];
+  createable?: boolean;
+  bordered?: boolean;
+  query?: any;
+  table?: {
+    rowKey?: string;
+    columns: ICocaColumn[];
+    editable?: boolean;
+    deleteable?: boolean;
+    actions?: ICocaAction[] | ((record: any) => ICocaAction[]);
+  };
+
+  list?: {
+    [index: string]: any;
+  };
+}
+
+const Pager: React.ForwardRefRenderFunction<unknown, PagerProps> = (
   {
-    model: string;
-    type?: 'table' | 'list';
-    name: string | React.ReactNode;
-    filters?: ICocaFilter[];
-    createable?: boolean;
-    bordered?: boolean;
-    query?: any;
-    table?: {
-      rowKey?: string;
-      columns: ICocaColumn[];
-      editable?: boolean;
-      deleteable?: boolean;
-      actions?: ICocaAction[] | ((record: any) => ICocaAction[]);
-    };
-
-    list?: {
-      renderItem?: (item: any) => React.ReactNode;
-      grid?: any;
-    };
-  } & IRouteComponentProps
-> = ({
-  model,
-  type = 'table',
-  createable = true,
-  name,
-  filters = [],
-  bordered = true,
-  table = {},
-  list = {},
-  query = {},
-  location,
-}) => {
+    model,
+    type = 'table',
+    createable = true,
+    name,
+    filters = [],
+    bordered = true,
+    table = {},
+    list = {},
+    query = {},
+  },
+  ref,
+) => {
   const { rowKey = 'id', columns = [], editable = true, deleteable = true, actions = [] } = table;
-  const { renderItem, grid } = list;
-
+  const location = useLocation();
   /**
    * table数据请求部分
    */
@@ -244,6 +248,12 @@ const Pager: React.FC<
     history.push(`${location.pathname}/${id}`);
   };
 
+  React.useImperativeHandle(ref, () => ({
+    onDelete,
+    onCreate,
+    onEdit,
+  }));
+
   /**
    * 表哥数据格式定义
    */
@@ -257,7 +267,7 @@ const Pager: React.FC<
         sortOrder: sorter.field === 'id' && sorter.order,
         render: (text: any) => (text ? text : '-'),
       },
-      ...columns.map((column) => {
+      ...columns.map(column => {
         if (column.sorter) {
           column.sortOrder = sorter.field === column.dataIndex && sorter.order;
         }
@@ -328,8 +338,7 @@ const Pager: React.FC<
           <FilterBar filters={filters} submit={submit} reset={reset} form={form} />
         )}
         <List
-          renderItem={renderItem}
-          grid={grid}
+          {...list}
           bordered={bordered}
           {...tableProps}
           pagination={{
@@ -355,4 +364,5 @@ const Pager: React.FC<
     </Box>
   );
 };
-export default withRouter(Pager);
+
+export default React.forwardRef<PagerInstance, PagerProps>(Pager);
