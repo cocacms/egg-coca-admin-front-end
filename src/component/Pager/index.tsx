@@ -27,9 +27,9 @@ import Editor from './editor';
 import { useTableList, useDelete } from './hook';
 
 export interface PagerInstance {
-  onDelete: () => void;
   onCreate: () => void;
-  onEdit: () => void;
+  onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 }
 export { Editor, Box };
 
