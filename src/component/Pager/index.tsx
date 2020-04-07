@@ -250,9 +250,9 @@ const Pager: React.ForwardRefRenderFunction<unknown, PagerProps> = (
   };
 
   React.useImperativeHandle(ref, () => ({
-    onDelete,
-    onCreate,
-    onEdit,
+    delete: onDelete,
+    create: onCreate,
+    edit: onEdit,
     refresh,
   }));
 
