@@ -27,9 +27,10 @@ import Editor from './editor';
 import { useTableList, useDelete } from './hook';
 
 export interface PagerInstance {
-  onCreate: () => void;
-  onDelete: (id: string) => void;
-  onEdit: (id: string) => void;
+  create: () => void;
+  delete: (id: string) => void;
+  edit: (id: string) => void;
+  refresh: () => any;
 }
 export { Editor, Box };
 
@@ -252,6 +253,7 @@ const Pager: React.ForwardRefRenderFunction<unknown, PagerProps> = (
     onDelete,
     onCreate,
     onEdit,
+    refresh,
   }));
 
   /**
