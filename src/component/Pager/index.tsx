@@ -177,6 +177,7 @@ const Header: React.FC<{
 };
 
 export interface PagerProps {
+  children?: React.ReactElement;
   model: string;
   type?: 'table' | 'list';
   name: string | React.ReactNode;
@@ -199,6 +200,7 @@ export interface PagerProps {
 
 const Pager: React.ForwardRefRenderFunction<unknown, PagerProps> = (
   {
+    children,
     model,
     type = 'table',
     createable = true,
@@ -335,6 +337,7 @@ const Pager: React.ForwardRefRenderFunction<unknown, PagerProps> = (
     return (
       <Box>
         <Header name={name} createable={createable} onCreate={onCreate} />
+        {children}
         <Divider />
         {filters.length > 0 && (
           <FilterBar filters={filters} submit={submit} reset={reset} form={form} />
@@ -360,6 +363,7 @@ const Pager: React.ForwardRefRenderFunction<unknown, PagerProps> = (
   return (
     <Box>
       <Header name={name} createable={createable} onCreate={onCreate} />
+      {children}
       <Divider />
       <FilterBar filters={filters} submit={submit} reset={reset} form={form} />
       <Table bordered={bordered} columns={column_props()} rowKey={rowKey} {...tableProps} />
