@@ -9,6 +9,7 @@ const coca: ICoca = {
       key: '/',
       icon: <HomeOutlined />,
       name: '首页',
+      editpage: false,
     },
 
     {
@@ -16,6 +17,7 @@ const coca: ICoca = {
       icon: <SettingOutlined />,
       name: '系统配置',
       access: 'setting',
+      editpage: false,
     },
 
     {

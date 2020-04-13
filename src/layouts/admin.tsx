@@ -17,14 +17,14 @@ const MainLayout = styled(Layout)`
 
 const Logo = styled.div<{ collapsed: boolean }>`
   color: ${theme['@primary-color']};
-  font-size: ${props => (props.collapsed ? '12px' : '20px')};
+  font-size: ${(props) => (props.collapsed ? '12px' : '20px')};
   height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: all 0.3s ease;
   img {
-    height: 40px;
+    height: 30px;
     margin-right: 8px;
   }
 `;
@@ -60,6 +60,11 @@ const MainHeader = styled(Header)`
 const MainContent = styled(Content)`
   margin: 24px 16px;
   padding: 24px;
+
+  @media screen and (max-width: 768px) {
+    padding: 0px;
+    margin: 0px;
+  }
 `;
 
 const MainFooter = styled(Footer)`
@@ -77,7 +82,7 @@ interface IProps {
 }
 
 const AdminLayout: React.FC<IProps> = inject('user')(
-  observer(props => {
+  observer((props) => {
     const { children, user } = props;
     const [collapsed, setCollapsed] = useState(false);
 
@@ -90,9 +95,19 @@ const AdminLayout: React.FC<IProps> = inject('user')(
 
     return (
       <MainLayout>
-        <MainSider theme="light" trigger={null} collapsible collapsed={collapsed}>
+        <MainSider
+          theme="light"
+          breakpoint="lg"
+          onBreakpoint={setCollapsed}
+          trigger={null}
+          collapsed={collapsed}
+          collapsible
+        >
           <Link to="/admin">
-            <Logo collapsed={collapsed}>{process.env.TITLE}</Logo>
+            <Logo collapsed={collapsed}>
+              <img src={require('@/assets/logo.png')} />
+              {!collapsed && process.env.TITLE}
+            </Logo>
           </Link>
           <Menu />
         </MainSider>

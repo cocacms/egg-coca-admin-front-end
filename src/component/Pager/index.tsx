@@ -198,7 +198,7 @@ export interface PagerProps {
   };
 }
 
-const Pager: React.ForwardRefRenderFunction<unknown, PagerProps> = (
+const Pager: React.ForwardRefRenderFunction<PagerInstance, PagerProps> = (
   {
     children,
     model,
@@ -271,7 +271,7 @@ const Pager: React.ForwardRefRenderFunction<unknown, PagerProps> = (
         sortOrder: sorter.field === 'id' && sorter.order,
         render: (text: any) => (text ? text : '-'),
       },
-      ...columns.map(column => {
+      ...columns.map((column) => {
         if (column.sorter) {
           column.sortOrder = sorter.field === column.dataIndex && sorter.order;
         }
@@ -366,7 +366,15 @@ const Pager: React.ForwardRefRenderFunction<unknown, PagerProps> = (
       {children}
       <Divider />
       <FilterBar filters={filters} submit={submit} reset={reset} form={form} />
-      <Table bordered={bordered} columns={column_props()} rowKey={rowKey} {...tableProps} />
+      <Table
+        className="table-nowrap"
+        bordered={bordered}
+        columns={column_props()}
+        rowKey={rowKey}
+        size="small"
+        scroll={{ x: true }}
+        {...tableProps}
+      />
     </Box>
   );
 };

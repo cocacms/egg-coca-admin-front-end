@@ -21,6 +21,7 @@ export default defineConfig({
   antd: {
     dark: false,
   },
+  favicon: 'favicon.ico',
   dva: false,
   dynamicImport: {
     loading: '@/component/Loading/index.tsx',

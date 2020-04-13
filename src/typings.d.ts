@@ -33,6 +33,8 @@ interface ICocaMenu {
   icon?: React.ReactElement;
   access?: string;
   sub?: ICocaMenu[];
+  editpage?: boolean;
+  component?: string;
 }
 
 interface ICocaOption {
@@ -96,5 +98,5 @@ interface ICocaForm {
 interface ICoca {
   model: string[];
   dropdown: React.ReactElement[];
-  menu: ICocaMenu[] | (() => ICocaMenu[]);
+  menu: ICocaMenu[];
 }

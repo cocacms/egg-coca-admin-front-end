@@ -24,3 +24,8 @@ code {
 ul {
   list-style: none !important;
 }
+
+.table-nowrap table th,
+.table-nowrap table td {
+  min-width: 100px;
+}

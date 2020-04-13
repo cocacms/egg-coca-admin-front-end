@@ -26,7 +26,13 @@ const Container = styled.div`
     .title {
       text-align: center;
       height: 45px;
-      line-height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      img {
+        height: 30px;
+        margin-right: 10px;
+      }
     }
 
     .logo {
@@ -82,7 +88,10 @@ const Login: React.FC<IProps> = ({ user }) => {
   return (
     <Container>
       <div className="box">
-        <h1 className="title">{process.env.TITLE}</h1>
+        <h1 className="title">
+          <img src={require('@/assets/logo.png')} />
+          {process.env.TITLE}
+        </h1>
         <LoginForm onFinish={handleSubmit} initialValues={{ remember: true }}>
           <FormItem name="account">
             <Input

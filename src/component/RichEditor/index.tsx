@@ -11,15 +11,16 @@ class RichEditor extends Component<{
 }> {
   state = {
     editorState: BraftEditor.createEditorState(null),
-    html: '',
   };
 
   destroy: boolean = false;
 
-  componentDidMount() {
-    this.setState({
-      editorState: BraftEditor.createEditorState(this.props.value),
-    });
+  constructor(props: any) {
+    super(props);
+
+    this.state = {
+      editorState: BraftEditor.createEditorState(props.value),
+    };
   }
 
   uploadFn = async (param: any) => {
@@ -55,7 +56,7 @@ class RichEditor extends Component<{
   save = debounce(() => {
     const htmlString = this.state.editorState.toHTML();
     this.props.onChange && this.destroy !== true && this.props.onChange(htmlString);
-  }, 1000);
+  }, 500);
 
   handleEditorChange = (editorState: EditorState) => {
     this.setState({ editorState }, this.save);

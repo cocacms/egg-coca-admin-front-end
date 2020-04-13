@@ -14,7 +14,7 @@ interface IMenuItem extends MenuItemProps {
   path?: string;
 }
 
-const MenuItem: React.FC<IMenuItem> = props => <Menu.Item {...props}>{props.children}</Menu.Item>;
+const MenuItem: React.FC<IMenuItem> = (props) => <Menu.Item {...props}>{props.children}</Menu.Item>;
 
 const getMenuItem = (it: ICocaMenu) => {
   const access = useAccess();
@@ -49,10 +49,6 @@ const CocaMenu: React.FC<ICocaMenuProps> = ({ location }) => {
     if (Array.isArray(coca.menu)) {
       return coca.menu;
     }
-
-    if (typeof coca.menu === 'function') {
-      return coca.menu();
-    }
     return [];
   };
   return (
@@ -60,17 +56,17 @@ const CocaMenu: React.FC<ICocaMenuProps> = ({ location }) => {
       theme="light"
       mode="inline"
       defaultOpenKeys={getMenu()
-        .filter(i => i.sub && Array.isArray(i.sub) && i.sub.length > 0)
-        .map(i => i.key)}
+        .filter((i) => i.sub && Array.isArray(i.sub) && i.sub.length > 0)
+        .map((i) => i.key)}
       defaultSelectedKeys={[location.pathname]}
       selectedKeys={[location.pathname]}
       onClick={({ item }) => {
         if (item.props.path) history.push(item.props.path);
       }}
     >
-      {getMenu().map(it => {
+      {getMenu().map((it) => {
         if (it.sub && Array.isArray(it.sub) && it.sub.length > 0) {
-          const childs = it.sub.map(iit => getMenuItem(iit)).filter(iit => iit !== null);
+          const childs = it.sub.map((iit) => getMenuItem(iit)).filter((iit) => iit !== null);
           if (childs.length > 0) {
             let icon = null;
             if (it.icon) {

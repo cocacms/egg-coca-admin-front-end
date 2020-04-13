@@ -10,7 +10,7 @@ function getBase64(file: File): Promise<string> {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result as string);
-    reader.onerror = error => reject(error);
+    reader.onerror = (error) => reject(error);
   });
 }
 
@@ -45,7 +45,7 @@ class PicturesWall extends React.Component<
     if (value) {
       let fileList: UploadFile[] = [];
       if (Array.isArray(value)) {
-        fileList = value.map(url => ({ uid: url, url, status: 'done' } as UploadFile));
+        fileList = value.map((url) => ({ uid: url, url, status: 'done' } as UploadFile));
       }
 
       if (typeof value === 'string') {
@@ -74,7 +74,7 @@ class PicturesWall extends React.Component<
     if (this.props.onChange && this.destroy !== true) {
       this.props.onChange(max === 1 ? (fileList[0] as string) : fileList);
     }
-  }, 1000);
+  }, 500);
 
   handleCancel = () => this.setState({ previewVisible: false });
 
