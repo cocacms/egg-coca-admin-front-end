@@ -11,7 +11,8 @@
     "build-dev": "cross-env UMI_ENV=dev umi build",
     "test": "umi test",
     "lint": "eslint --ext .js src",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
   "dependencies": {
     "@umijs/hooks": "^1.7.1",
