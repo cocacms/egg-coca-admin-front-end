@@ -1,12 +1,11 @@
 import React from 'react';
 import { Menu } from 'antd';
-import { history, withRouter, useAccess } from 'umi';
+import { history, useAccess, useLocation } from 'umi';
 
-import { IRouteComponentProps } from '@/index';
 import coca from '@/coca';
 import { MenuItemProps } from 'antd/es/menu/MenuItem';
 
-interface ICocaMenuProps extends IRouteComponentProps<any> {}
+interface ICocaMenuProps {}
 
 const { SubMenu } = Menu;
 
@@ -44,7 +43,9 @@ const getMenuItem = (it: ICocaMenu) => {
   );
 };
 
-const CocaMenu: React.FC<ICocaMenuProps> = ({ location }) => {
+const CocaMenu: React.FC<ICocaMenuProps> = () => {
+  const location: any = useLocation();
+
   const getMenu = () => {
     if (Array.isArray(coca.menu)) {
       return coca.menu;
@@ -94,4 +95,4 @@ const CocaMenu: React.FC<ICocaMenuProps> = ({ location }) => {
   );
 };
 
-export default withRouter(CocaMenu);
+export default CocaMenu;

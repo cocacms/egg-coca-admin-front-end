@@ -4,8 +4,6 @@ import { configure } from 'mobx';
 
 import user from '@/model/user';
 
-import coca from '@/coca';
-
 configure({ enforceActions: 'observed' });
 
 const models: { [index: string]: any } = {
