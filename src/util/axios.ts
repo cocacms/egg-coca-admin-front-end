@@ -14,7 +14,7 @@ request.interceptors.request.use(
       localStorage[process.env.APIAUTHNAME || 'process.env.APIAUTHNAME'] ||
       sessionStorage[process.env.APIAUTHNAME || 'process.env.APIAUTHNAME'];
     if (Authorization) {
-      config.headers.Authorization = `Basic ${Authorization}`;
+      config.headers.Authorization = `Bearer ${Authorization}`;
     }
 
     return config;

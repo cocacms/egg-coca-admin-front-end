@@ -240,7 +240,7 @@ const Pager: React.ForwardRefRenderFunction<PagerInstance, PagerProps> = (
    * 创建
    */
   const onCreate = async () => {
-    history.push(`${location.pathname}/0`);
+    history.push(`${location.pathname}/new`);
   };
 
   /**

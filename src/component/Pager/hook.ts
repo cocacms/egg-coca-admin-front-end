@@ -24,10 +24,10 @@ export const useDetail = (model: string, options: any = {}) => {
 };
 
 export const useAction = (model: string, id: string, links?: any[]) => {
-  const isUpdate = id !== '0';
+  const isUpdate = id !== 'new';
 
   const create = useRequest(
-    data =>
+    (data) =>
       axios.post(`${process.env.APIPREFIX}/${model}`, data, {
         params: {
           links,
@@ -40,7 +40,7 @@ export const useAction = (model: string, id: string, links?: any[]) => {
   );
 
   const update = useRequest(
-    data =>
+    (data) =>
       axios.put(`${process.env.APIPREFIX}/${model}/${id}`, data, {
         params: {
           links,
@@ -58,7 +58,7 @@ export const useAction = (model: string, id: string, links?: any[]) => {
 export const useDelete = (model: string) => {
   return useRequest((id: string) => axios.delete(`${process.env.APIPREFIX}/${model}/${id}`), {
     manual: true,
-    fetchKey: id => id,
+    fetchKey: (id) => id,
   });
 };
 
@@ -135,6 +135,7 @@ export const useTableList = (
       defaultPageSize: 20,
       formatResult: pageFormatResult,
       loadingDelay: 300,
+      defaultType: 'advance',
     },
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Form,
   Input,
@@ -13,8 +13,7 @@ import {
   Select,
 } from 'antd';
 
-import { history, withRouter } from 'umi';
-import { IRouteComponentProps } from '@/index';
+import { history, useLocation, useParams } from 'umi';
 import RichEditor from '@/component/RichEditor';
 import MarkdownEditor from '@/component/MarkdownEditor';
 import Upload from '@/component/Upload';
@@ -26,10 +25,6 @@ import { useAction, useDetail } from './hook';
 interface Hook {
   before?: (value: any) => any;
   after?: (value: any) => void;
-}
-
-interface RouterInfo {
-  [propName: string]: any;
 }
 
 const getFormProps = (props: any | ((data: any) => any), data = {}) => {
@@ -156,21 +151,22 @@ interface ICocaEditorProps {
   initialValues?: (v: any) => any;
 }
 
-const Edit: React.FC<ICocaEditorProps & IRouteComponentProps<RouterInfo>> = ({
+const Edit: React.FC<ICocaEditorProps> = ({
   model,
   name,
   forms,
   children,
-  match,
   key = 'id',
   hook = {},
   links = [],
   query = {},
-  initialValues = (v) => v,
-  location,
+  initialValues = (v: any) => v,
 }) => {
-  const id = match.params[key];
-  const isUpdate = id !== '0';
+  const location: any = useLocation();
+  const params: any = useParams();
+
+  const id = params[key];
+  const isUpdate = id !== 'new';
   const [form] = Form.useForm();
 
   const { data, loading: detail_loading } = useDetail(model, {
@@ -220,4 +216,4 @@ const Edit: React.FC<ICocaEditorProps & IRouteComponentProps<RouterInfo>> = ({
   );
 };
 
-export default withRouter(Edit);
+export default Edit;
