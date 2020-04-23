@@ -56,6 +56,7 @@ const CocaMenu: React.FC<ICocaMenuProps> = () => {
     <Menu
       theme="light"
       mode="inline"
+      inlineIndent={32}
       defaultOpenKeys={getMenu()
         .filter((i) => i.sub && Array.isArray(i.sub) && i.sub.length > 0)
         .map((i) => i.key)}

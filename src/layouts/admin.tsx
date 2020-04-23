@@ -25,7 +25,6 @@ const Logo = styled.div<{ collapsed: boolean }>`
   transition: all 0.3s ease;
   img {
     height: 30px;
-    margin-right: 8px;
   }
 `;
 
@@ -49,7 +48,6 @@ const MenuFoldOutlinedButton = styled(MenuFoldOutlined)`
   }
 `;
 
-const MainSider = styled(Sider)``;
 const MainHeader = styled(Header)`
   background: #ffffff !important;
   padding: 0 24px;
@@ -95,12 +93,13 @@ const AdminLayout: React.FC<IProps> = inject('user')(
 
     return (
       <MainLayout>
-        <MainSider
+        <Sider
           theme="light"
           breakpoint="lg"
           onBreakpoint={setCollapsed}
           trigger={null}
           collapsed={collapsed}
+          collapsedWidth={80}
           collapsible
         >
           <Link to="/admin">
@@ -110,7 +109,7 @@ const AdminLayout: React.FC<IProps> = inject('user')(
             </Logo>
           </Link>
           <Menu />
-        </MainSider>
+        </Sider>
         <Layout>
           <MainHeader theme="light">
             {collapsed ? (

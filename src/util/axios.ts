@@ -43,15 +43,14 @@ request.interceptors.response.use(
     if (response.status === 401 && response.config.url === process.env.APIHOST) {
       user.logout();
     }
-
     message.error(msg);
-    return Promise.reject(new Error(msg));
+    return Promise.reject(msg);
   },
   function (error) {
     const messageMap: { [index: string]: string } = {
       'Network Error': '无法访问服务器',
     };
-    message.error(messageMap[error.message] || error.message);
+    message.error(messageMap[error.message] || error.message || '未知错误');
     return Promise.reject(error);
   },
 );

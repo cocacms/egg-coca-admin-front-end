@@ -21,10 +21,10 @@ interface IState {}
 const FormItem = Form.Item;
 
 class Login extends Component<IProps, IState> {
-  form: React.RefObject<FormInstance> = React.createRef();
-
   handleSubmit = async (values: any) => {
+    console.log(values);
     await this.props.user.reset_password(values.password, values.newpassword);
+    console.log('change passwor success');
     message.success('密码修改成功！');
   };
 
@@ -63,10 +63,11 @@ class Login extends Component<IProps, IState> {
                 { required: true, message: '请再次输入新密码' },
                 (form: any) => {
                   return {
-                    validator(rule: any, value: any, callback) {
+                    validator(rule: any, value: any) {
                       if (value == !form.getFieldValue('newpassword')) {
-                        callback('两次密码输入不一致');
+                        return Promise.reject('两次密码输入不一致');
                       }
+                      return Promise.resolve();
                     },
                     message: '两次密码输入不一致',
                   };
