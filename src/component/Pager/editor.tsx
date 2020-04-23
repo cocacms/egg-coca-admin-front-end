@@ -168,10 +168,8 @@ const Edit: React.FC<ICocaEditorProps> = ({
   const id = params[key];
   const isUpdate = id !== 'new';
   const [form] = Form.useForm();
-
-  const { data, loading: detail_loading } = useDetail(model, {
-    defaultParams: [id, query],
-  });
+  const detailConfig = isUpdate ? { defaultParams: [id || 1, query] } : {};
+  const { data, loading: detail_loading } = useDetail(model, detailConfig);
 
   const action = useAction(model, id, links);
   const submit = async (values: any) => {
