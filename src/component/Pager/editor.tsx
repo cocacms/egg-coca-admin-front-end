@@ -18,6 +18,7 @@ import RichEditor from '@/component/RichEditor';
 import MarkdownEditor from '@/component/MarkdownEditor';
 import Upload from '@/component/Upload';
 import Back from '@/component/Back';
+import CocaError from '@/util/error';
 
 import { Box, formItemLayout, tailFormItemLayout } from './form';
 import { useAction, useDetail } from './hook';
@@ -177,7 +178,7 @@ const Edit: React.FC<ICocaEditorProps> = ({
       values = hook.before(values);
     }
     const result = await action.run(values);
-    if (result instanceof Error) return;
+    if (result instanceof Error || result instanceof CocaError) return;
     if (hook && hook.after) {
       hook.after(result);
     }

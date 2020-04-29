@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { message } from 'antd';
 import user from '@/model/user';
+import CocaError from './error';
 
 const request = axios.create({
   baseURL: process.env.APIHOST,
@@ -44,7 +45,7 @@ request.interceptors.response.use(
       user.logout();
     }
     message.error(msg);
-    return Promise.reject(msg);
+    return Promise.reject(new CocaError(msg));
   },
   function (error) {
     const messageMap: { [index: string]: string } = {
