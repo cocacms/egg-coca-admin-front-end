@@ -104,6 +104,20 @@ const handleWhere = (filters: ICocaFilter[] = [], where: any = {}) => {
   return where;
 };
 
+const handleInclude = (includes: any[] = [], where: any = {}) => {
+  for (const include of includes) {
+    if (include.association) {
+      Object.entries(where).forEach(([filed, value]) => {
+        if (filed.indexOf(include.association + '.') !== -1) {
+          if (!include.where) include.where = {};
+          include.where[filed.replace(include.association + '.', '')] = value;
+        }
+      });
+    }
+  }
+  return includes;
+};
+
 const pageFormatResult = (response: any) => {
   const { data } = response;
   return {
@@ -116,12 +130,16 @@ export const useTableList = (
   model: string,
   filters: ICocaFilter[],
   form: FormInstance,
-  query?: any[],
+  query?: any,
 ) => {
   return useFormTable(
     (pginatedParams: any, formData: Object) => {
       const params = handleParams(pginatedParams, formData);
-      params.where = JSON.stringify(handleWhere(filters, params.where));
+      const where = handleWhere(filters, params.where);
+      params.where = JSON.stringify(where);
+      if (query && query.include) {
+        query.include = handleInclude(query.include, where);
+      }
       return axios.get(`${process.env.APIPREFIX}/${model}`, {
         params: {
           ...params,
