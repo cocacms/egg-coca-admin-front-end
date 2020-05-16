@@ -26,6 +26,12 @@ import Editor from './editor';
 
 import { useTableList, useDelete } from './hook';
 
+const Buttons = styled.div`
+  text-align: right;
+  .ant-btn {
+    margin-left: 8px;
+  }
+`;
 export interface PagerInstance {
   create: () => void;
   delete: (id: string) => void;
@@ -155,8 +161,9 @@ const FilterBar: React.FC<{
 const Header: React.FC<{
   name: string | React.ReactNode;
   createable?: boolean;
+  headers?: React.ReactNode[];
   onCreate?: () => void;
-}> = ({ name, createable = true, onCreate }) => {
+}> = ({ name, createable = true, onCreate, headers = [] }) => {
   return (
     <Row justify="space-between">
       <Col>
@@ -166,11 +173,14 @@ const Header: React.FC<{
         </h1>
       </Col>
       <Col style={{ textAlign: 'right' }}>
-        {createable && (
-          <Button onClick={onCreate} type="primary">
-            创建{name}
-          </Button>
-        )}
+        <Buttons>
+          {headers}
+          {createable && (
+            <Button onClick={onCreate} type="primary">
+              创建{name}
+            </Button>
+          )}
+        </Buttons>
       </Col>
     </Row>
   );
@@ -185,6 +195,7 @@ export interface PagerProps {
   createable?: boolean;
   bordered?: boolean;
   query?: any;
+  headers?: React.ReactNode[];
   table?: {
     rowKey?: string;
     columns: ICocaColumn[];
@@ -210,6 +221,7 @@ const Pager: React.ForwardRefRenderFunction<PagerInstance, PagerProps> = (
     table = {},
     list = {},
     query = {},
+    headers = [],
   },
   ref,
 ) => {
@@ -362,7 +374,7 @@ const Pager: React.ForwardRefRenderFunction<PagerInstance, PagerProps> = (
 
   return (
     <Box>
-      <Header name={name} createable={createable} onCreate={onCreate} />
+      <Header name={name} createable={createable} onCreate={onCreate} headers={headers} />
       {children}
       <Divider />
       <FilterBar filters={filters} submit={submit} reset={reset} form={form} />
