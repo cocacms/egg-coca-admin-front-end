@@ -65,7 +65,7 @@ interface ICocaFilter {
 interface ICocaColumn {
   title?: React.ReactNode | string;
   key?: React.Key;
-  dataIndex?: string;
+  dataIndex?: string | string[];
   render?: (text: any, record: any, index: number) => React.ReactNode;
   align?: 'left' | 'right' | 'center';
   ellipsis?: boolean;
