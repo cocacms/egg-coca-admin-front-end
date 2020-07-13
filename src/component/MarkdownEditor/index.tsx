@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import Editor from 'for-editor';
 import { Spin } from 'antd';
 
-import { useControllableValue } from '@umijs/hooks';
+import { useControllableValue } from 'ahooks';
 import { getToken, upload } from '@/service/upload';
 
-const MarkdownEditor: React.FC = props => {
+const MarkdownEditor: React.FC = (props) => {
   const [value, onChange] = useControllableValue(props);
 
   const [uploading, setUploading] = useState(false);

@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { useRequest, useFormTable } from '@umijs/hooks';
+import { useRequest, useAntdTable } from 'ahooks';
 import axios from '@/util/axios';
 import { FormInstance } from 'antd/lib/form';
 
@@ -16,6 +16,7 @@ export const useDetail = (model: string, options: any = {}) => {
     {
       ...options,
       manual,
+      throwOnError: true,
       initialData: {},
       formatResult,
     },
@@ -35,6 +36,7 @@ export const useAction = (model: string, id: string, links?: any[]) => {
       }),
     {
       formatResult,
+      throwOnError: true,
       manual: true,
     },
   );
@@ -48,6 +50,7 @@ export const useAction = (model: string, id: string, links?: any[]) => {
       }),
     {
       formatResult,
+      throwOnError: true,
       manual: true,
     },
   );
@@ -58,6 +61,7 @@ export const useAction = (model: string, id: string, links?: any[]) => {
 export const useDelete = (model: string) => {
   return useRequest((id: string) => axios.delete(`${process.env.APIPREFIX}/${model}/${id}`), {
     manual: true,
+    throwOnError: true,
     fetchKey: (id) => id,
   });
 };
@@ -132,7 +136,7 @@ export const useTableList = (
   form: FormInstance,
   query?: any,
 ) => {
-  return useFormTable(
+  return useAntdTable(
     (pginatedParams: any, formData: Object) => {
       const params = handleParams(pginatedParams, formData);
       const where = handleWhere(filters, params.where);

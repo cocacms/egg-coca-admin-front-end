@@ -104,7 +104,7 @@ const AdminLayout: React.FC<IProps> = inject('user')(
         >
           <Link to="/admin">
             <Logo collapsed={collapsed}>
-              <img src={require('@/assets/logo.png')} />
+              <img src={require('@/assets/logo.png')} style={{ marginRight: collapsed ? 0 : 8 }} />
               {!collapsed && process.env.TITLE}
             </Logo>
           </Link>

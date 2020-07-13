@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Checkbox } from 'antd';
 import curd from '@/service/curd';
-import { useControllableValue } from '@umijs/hooks';
+import { useControllableValue } from 'ahooks';
 
-const RoleSelect: React.FC<{}> = props => {
+const RoleSelect: React.FC<{}> = (props) => {
   const [roles, setRoles] = useState([]);
   const [value, onChange] = useControllableValue(props);
 

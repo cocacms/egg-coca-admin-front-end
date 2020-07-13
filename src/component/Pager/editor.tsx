@@ -178,7 +178,6 @@ const Edit: React.FC<ICocaEditorProps> = ({
       values = hook.before(values);
     }
     const result = await action.run(values);
-    if (result instanceof Error || result instanceof CocaError) return;
     if (hook && hook.after) {
       hook.after(result);
     }
